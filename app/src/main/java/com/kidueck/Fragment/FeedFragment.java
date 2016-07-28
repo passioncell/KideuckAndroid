@@ -31,6 +31,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.kidueck.Activity.DetailActivity;
 import com.kidueck.Common.ApplicationController;
 import com.kidueck.Common.PointReceiver;
+import com.kidueck.Common.URLInfo;
 import com.kidueck.Concrete.PostingRepository;
 import com.kidueck.ListData.Posting;
 import com.kidueck.Model.PostingListModel;
@@ -410,7 +411,13 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
             holder.upButton.setTag(position);
             holder.downButton.setTag(position);
 
-            Picasso.with(getContext()).load("http://dayot.seobuchurch.or.kr/upload/post/395/1.jpg").into(holder.attachdImg);
+            holder.attachdImg.setImageDrawable(null);
+
+            if(data.isImage){
+                Picasso.with(getContext()).load(new URLInfo().getPostImgUploadUrl() + data.getPostingId() + "/1.jpg").into(holder.attachdImg);
+            }
+
+
 
             return convertView;
         }
@@ -440,6 +447,7 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
             addInfo.isUpDown = postingListModel.isUpDown;
             addInfo.isWriter = postingListModel.isWriter;
             addInfo.postingId = Integer.parseInt(postingListModel.postingId);
+            addInfo.isImage = postingListModel.isImage;
 
             datas.add(addInfo);
         }

@@ -22,13 +22,15 @@ public class Posting {
     public boolean isWriter;
     public int postingId;
     public Drawable attachedImg;
+    public boolean isImage;
 
 
     public Posting() {
     }
 
     public Posting(String content, String date, Drawable deleteButton, String commentCnt, int totalVoteCount,
-                   Drawable upButton, Drawable downButton, int isUpDown, boolean isWriter, int postingId, Drawable attachedImg) {
+                   Drawable upButton, Drawable downButton, int isUpDown, boolean isWriter, int postingId, Drawable attachedImg,
+                   boolean isImage) {
         this.content = content;
         this.date = date;
         this.deleteButton = deleteButton;
@@ -40,6 +42,7 @@ public class Posting {
         this.isWriter = isWriter;
         this.postingId = postingId;
         this.attachedImg = attachedImg;
+        this.isImage = isImage;
     }
 
     public String getContent() {
@@ -128,5 +131,13 @@ public class Posting {
 
     public void setAttachedImg(Drawable attachedImg) {
         this.attachedImg = attachedImg;
+    }
+
+    public boolean isImage() {
+        return isImage;
+    }
+
+    public void setIsImage(boolean isImage) {
+        this.isImage = isImage;
     }
 }

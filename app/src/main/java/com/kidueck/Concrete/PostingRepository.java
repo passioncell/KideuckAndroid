@@ -81,7 +81,8 @@ public class PostingRepository implements IPostingRepository {
                         Obj.get("postingId").toString(), Obj.get("content").toString(),
                         Obj.get("writtenDate").toString(), Boolean.parseBoolean(Obj.get("isWriter").toString()),
                         Obj.get("commentCnt").toString(), Integer.parseInt(Obj.get("totalVoteCnt").toString()),
-                        Integer.parseInt(Obj.get("isUpDown").toString()),Obj.get("lat").toString(),Obj.get("lon").toString()
+                        Integer.parseInt(Obj.get("isUpDown").toString()),Obj.get("lat").toString(),Obj.get("lon").toString(),
+                        Boolean.parseBoolean(Obj.get("isImage").toString())
                 );
                 vector.add(postingListModel);
             }
@@ -118,8 +119,8 @@ public class PostingRepository implements IPostingRepository {
                         Obj.get("postingId").toString(), Obj.get("content").toString(),
                         Obj.get("writtenDate").toString(), Boolean.parseBoolean(Obj.get("isWriter").toString()),
                         Obj.get("commentCnt").toString(), Integer.parseInt(Obj.get("totalVoteCnt").toString()),
-                        Integer.parseInt(Obj.get("isUpDown").toString()),Obj.get("lat").toString(),Obj.get("lon").toString()
-                );
+                        Integer.parseInt(Obj.get("isUpDown").toString()),Obj.get("lat").toString(),Obj.get("lon").toString(),
+                        Boolean.parseBoolean(Obj.get("isImage").toString()));
                 vector.add(postingListModel);
             }
 
@@ -155,8 +156,8 @@ public class PostingRepository implements IPostingRepository {
                         Obj.get("postingId").toString(), Obj.get("content").toString(),
                         Obj.get("writtenDate").toString(), Boolean.parseBoolean(Obj.get("isWriter").toString()),
                         Obj.get("commentCnt").toString(), Integer.parseInt(Obj.get("totalVoteCnt").toString()),
-                        Integer.parseInt(Obj.get("isUpDown").toString()),Obj.get("lat").toString(),Obj.get("lon").toString()
-                );
+                        Integer.parseInt(Obj.get("isUpDown").toString()),Obj.get("lat").toString(),Obj.get("lon").toString(),
+                        Boolean.parseBoolean(Obj.get("isImage").toString()));
                 vector.add(postingListModel);
             }
 
@@ -211,7 +212,8 @@ public class PostingRepository implements IPostingRepository {
                 detailPostingModel = new DetailPostingModel(
                         Obj.get("writtenDate").toString(),
                         Obj.get("content").toString(),
-                        Integer.parseInt(Obj.get("isUpDown").toString())
+                        Integer.parseInt(Obj.get("isUpDown").toString()),
+                        Boolean.parseBoolean(Obj.get("isImage").toString())
                 );
                 detailVector.add(detailPostingModel);
             }

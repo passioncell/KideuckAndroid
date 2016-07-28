@@ -7,11 +7,13 @@ public class DetailPostingModel {
     public String writtenDate;
     public String content;
     public int isUpDown;
+    public boolean isImage;
 
-    public DetailPostingModel(String writtenDate, String content, int isUpDown) {
+    public DetailPostingModel(String writtenDate, String content, int isUpDown, boolean isImage) {
         this.writtenDate = writtenDate;
         this.content = content;
         this.isUpDown = isUpDown;
+        this.isImage = isImage;
     }
 
     public String getWrittenDate() {
@@ -36,5 +38,13 @@ public class DetailPostingModel {
 
     public void setIsUpDown(int isUpDown) {
         this.isUpDown = isUpDown;
+    }
+
+    public boolean isImage() {
+        return isImage;
+    }
+
+    public void setIsImage(boolean isImage) {
+        this.isImage = isImage;
     }
 }

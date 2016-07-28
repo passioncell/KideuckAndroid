@@ -13,9 +13,10 @@ public class PostingListModel {
     public int isUpDown;
     public String lat;
     public String lon;
+    public boolean isImage;
 
     public PostingListModel(String postingId, String content, String writtenDate, boolean isWriter, String commentCnt, int totalVoteCnt, int isUpDown,
-                            String lat, String lon) {
+                            String lat, String lon, boolean isImage) {
         this.postingId = postingId;
         this.content = content;
         this.writtenDate = writtenDate;
@@ -25,6 +26,7 @@ public class PostingListModel {
         this.isUpDown = isUpDown;
         this.lat = lat;
         this.lon = lon;
+        this.isImage = isImage;
     }
 
     public String getPostingId() {
@@ -97,5 +99,13 @@ public class PostingListModel {
 
     public void setLon(String lon) {
         this.lon = lon;
+    }
+
+    public boolean isImage() {
+        return isImage;
+    }
+
+    public void setIsImage(boolean isImage) {
+        this.isImage = isImage;
     }
 }

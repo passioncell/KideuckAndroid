@@ -2,12 +2,8 @@ package com.kidueck.Activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.kidueck.Adapter.DeepCommentAdapter;
 import com.kidueck.ListData.Comment;
 import com.kidueck.R;
 
@@ -24,25 +20,25 @@ public class TestActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        Comment item = new Comment();
-        item.setCommentContent("ㅋㅋㅋ내용");
-        item.setWrittenDate("날짜다임마");
-
-        commentList.add(item);
-
-        DeepCommentAdapter adapter = new
-                DeepCommentAdapter(TestActivity.this, commentList);
-        list=(ListView)findViewById(R.id.list);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                Toast.makeText(TestActivity.this, "You Clicked at " , Toast.LENGTH_SHORT).show();
-
-            }
-        });
+//        Comment item = new Comment();
+//        item.setCommentContent("ㅋㅋㅋ내용");
+//        item.setWrittenDate("날짜다임마");
+//
+//        commentList.add(item);
+//
+//        DeepCommentAdapter adapter = new
+//                DeepCommentAdapter(TestActivity.this, commentList);
+//        list=(ListView)findViewById(R.id.list);
+//        list.setAdapter(adapter);
+//        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view,
+//                                    int position, long id) {
+//                Toast.makeText(TestActivity.this, "You Clicked at " , Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
 
     }
 

@@ -35,6 +35,7 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
 import com.kidueck.Common.PointReceiver;
+import com.kidueck.Common.URLInfo;
 import com.kidueck.Concrete.CommentRepository;
 import com.kidueck.Concrete.PostingRepository;
 import com.kidueck.ListData.Comment;
@@ -43,7 +44,6 @@ import com.kidueck.Model.DetailPostingModel;
 import com.kidueck.R;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -136,6 +136,7 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DetailActivity.this, DetailPostImage.class);
+                intent.putExtra("selectedPostingId", String.valueOf(selectedPostingId));
                 startActivity(intent);
             }
         });
@@ -158,13 +159,6 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
 
 
         new SetDetailPosting().execute();
-
-        //첨부 이미지 표시
-        try {
-            getattachedImg();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
 
     }
@@ -197,16 +191,11 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
 
     }
 
-    public void getattachedImg() throws IOException {
-        attachedImg.setVisibility(View.VISIBLE);
-        Picasso.with(getApplicationContext()).load("http://dayot.seobuchurch.or.kr/upload/post/395/1.jpg").into(attachedImg);
-
-    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //리스트뷰 행 클릭
-        Intent intent = new Intent(DetailActivity.this, TestActivity.class);
+        Intent intent = new Intent(DetailActivity.this, DeepCommentActivity.class);
         startActivity(intent);
 
     }
@@ -504,6 +493,11 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
                             .build();
 
                     shareButton.setShareContent(linkContent);
+
+                    //첨부사진
+                    if(detailVector.get(0).isImage){
+                        Picasso.with(getApplicationContext()).load(new URLInfo().getPostImgUploadUrl() +selectedPostingId + "/1.jpg").into(attachedImg);
+                    }
 
                 }
             });

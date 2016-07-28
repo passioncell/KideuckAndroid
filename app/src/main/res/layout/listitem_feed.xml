@@ -111,7 +111,6 @@
         android:gravity="center">
         <ImageView
             android:id="@+id/iv_feed_attached_img"
-            android:src="@drawable/icon_rion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="fitStart"

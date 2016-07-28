@@ -175,7 +175,7 @@ public class WriteActivity extends Activity implements View.OnClickListener {
 
             if(isImage){//사진 첨부한경우
                 if(imageSubmitResult != null){
-                    Toast.makeText(getApplicationContext(), "imageSubmitResult"+imageSubmitResult, Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getApplicationContext(), "imageSubmitResult"+imageSubmitResult, Toast.LENGTH_SHORT).show();
                     Log.e("zzz", "imageSubmitResult"+imageSubmitResult);
 
                     //포인트 갱신
