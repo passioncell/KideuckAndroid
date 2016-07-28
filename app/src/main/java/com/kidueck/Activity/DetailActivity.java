@@ -134,6 +134,13 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
         shareButton = (ShareButton) findViewById(R.id.bt_detail_share);
         submitComment = (ImageButton) findViewById(R.id.ib_detail_comment);
         attachedImg = (ImageView) findViewById(R.id.iv_detail_attached_img);
+        attachedImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DetailActivity.this, DetailPostImage.class);
+                startActivity(intent);
+            }
+        });
 
         submitComment.setOnClickListener(this);
         backButton = (ImageButton) findViewById(R.id.ib_detail_back);

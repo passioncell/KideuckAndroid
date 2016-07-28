@@ -66,6 +66,8 @@
 
         <activity android:name=".Activity.TestActivity"></activity>
 
+        <activity android:name=".Activity.DetailPostImage"></activity>
+
         <!-- 페이스북 공유하기 -->
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
