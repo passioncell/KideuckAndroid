@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="회원가입"
+                android:layout_marginLeft="16dp"
+                android:layout_gravity="center_vertical"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="40dp">
+
+            <EditText
+                android:id="@+id/et_join_id"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="아이디"
+                android:background="@drawable/round_stroke"
+                android:layout_marginBottom="5dp"
+                android:textSize="12dp"
+                android:textColor="@color/colorPrimary"
+                android:paddingLeft="10dp"
+                android:singleLine="true"
+                android:maxLength="25"
+                android:inputType="textVisiblePassword"/>
+            <EditText
+                android:id="@+id/et_join_pw"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="비밀번호(한글/특수문자 사용불가)"
+                android:background="@drawable/round_stroke"
+                android:textSize="12dp"
+                android:textColor="@color/colorPrimary"
+                android:paddingLeft="10dp"
+                android:password="true"
+                android:layout_marginBottom="5dp"
+                android:maxLength="15"
+                android:singleLine="true"
+                android:inputType="textVisiblePassword"/>
+
+            <EditText
+                android:id="@+id/et_join_pw2"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="비밀번호 확인"
+                android:background="@drawable/round_stroke"
+                android:textSize="12dp"
+                android:textColor="@color/colorPrimary"
+                android:paddingLeft="10dp"
+                android:password="true"
+                android:layout_marginBottom="5dp"
+                android:maxLength="15"
+                android:singleLine="true"
+                android:inputType="textVisiblePassword"/>
+
+            <EditText
+                android:id="@+id/et_join_root"
+                android:hint="유입경로 ( 페이스북, 플레이스토어 )"
+                android:textSize="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:singleLine="true"
+                android:maxLength="20"
+                android:background="@drawable/round_stroke"
+                android:paddingLeft="10dp"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginBottom="5dp"/>
+
+            <RadioGroup
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp">
+                <RadioButton
+                    android:id="@+id/rb_join_male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="남자"/>
+                <RadioButton
+                    android:id="@+id/rb_join_female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="여자"/>
+            </RadioGroup>
+
+            <!-- 생일 입력을 위한 폼 구성 요소 : 시작 -->
+            <TextView
+                android:layout_width="60sp"
+                android:layout_height="wrap_content"
+                android:text="생년월일"
+                android:layout_marginBottom="10dp"
+                />
+            <DatePicker
+                android:id="@+id/dp_join_birth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:calendarViewShown="false"
+                android:spinnersShown="true"/>
+
+            <!-- 생일 입력을 위한 폼 구성 요소 : 끝 -->
+
+            <Button
+                android:id="@+id/bt_join_join"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_stroke"
+                android:text="가입하기"
+                android:textSize="13dp"
+                android:textColor="@color/colorPrimary" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</LinearLayout>

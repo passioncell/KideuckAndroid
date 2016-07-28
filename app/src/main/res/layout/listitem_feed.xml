@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="#fff"
+    android:descendantFocusability="blocksDescendants"
+    android:layout_marginTop="5dp">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="265dp"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_weight="10">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp">
+
+
+            <TextView
+                android:id="@+id/tv_feed_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="13:44"
+                android:textSize="12dp"
+                android:textColor="@color/colorPrimary"
+                android:layout_gravity="bottom"
+                android:layout_marginRight="10dp"/>
+            <ImageView
+                android:id="@+id/iv_feed_writer_icon"
+                android:layout_width="25dp"
+                android:layout_height="14dp"
+                android:background="@drawable/icon_delete"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_feed_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="본문 내용입니다.\n이렇게나와요ㅋㅋ"
+            android:textColor="@color/text3"
+            android:textSize="11dp"
+            android:maxLength="100"
+            android:ellipsize="end"
+            android:layout_marginBottom="20dp"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="댓글"
+                android:textSize="10dp"/>
+            <TextView
+                android:id="@+id/tv_feed_comment_cnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:gravity="center">
+        <ImageButton
+            android:id="@+id/ib_feed_up"
+            android:layout_width="40dp"
+            android:layout_height="25dp"
+            android:background="@drawable/icon_up_off"/>
+        <TextView
+            android:id="@+id/tv_feed_total_cnt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="20dp"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"/>
+        <ImageButton
+            android:id="@+id/ib_feed_down"
+            android:layout_width="40dp"
+            android:layout_height="25dp"
+            android:background="@drawable/icon_down_off"/>
+    </LinearLayout>
+</LinearLayout>

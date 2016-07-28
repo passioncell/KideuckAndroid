@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:gravity="center"
+                android:background="#fff">
+
+                <Button
+                    android:id="@+id/bt_post_submit"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/round_stroke"
+                    android:text="작성완료"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12dp"
+                    />
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:background="@color/greyBg"
+                android:padding="10dp">
+                <EditText
+                    android:id="@+id/et_post_content"
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:hint="오늘 무슨 재미난일 없나요?"
+                    android:background="#fff"
+                    />
+            </LinearLayout>
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="48dp">-->
+                <!--&lt;!&ndash; CPC &ndash;&gt;-->
+                <!--<com.fsn.cauly.CaulyAdView-->
+                    <!--xmlns:app="http://schemas.android.com/apk/res/com.kidueck"-->
+                    <!--android:id="@+id/xmladview"-->
+                    <!--android:layout_width="fill_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentBottom="true"-->
+                    <!--app:appcode="X4ugHCy7"-->
+                    <!--app:effect="RightSlide"-->
+                    <!--app:bannerHeight="Proportional"-->
+                    <!--/>-->
+            <!--</LinearLayout>-->
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

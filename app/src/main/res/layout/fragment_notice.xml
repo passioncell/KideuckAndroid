@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="48dp">-->
+        <!--&lt;!&ndash; CPC &ndash;&gt;-->
+        <!--<com.fsn.cauly.CaulyAdView-->
+            <!--xmlns:app="http://schemas.android.com/apk/res/com.kidueck"-->
+            <!--android:id="@+id/xmladview"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--app:appcode="X4ugHCy7"-->
+            <!--app:effect="RightSlide"-->
+            <!--app:bannerHeight="Proportional"-->
+            <!--/>-->
+    <!--</LinearLayout>-->
+    <LinearLayout
+        android:id="@+id/ll_notice_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="알림 내역이 없습니다."/>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_notice"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

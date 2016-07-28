@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/greyBg">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/colorPrimary"
+        android:paddingLeft="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="키득작성"
+            android:textColor="#fff"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/bt_write_image"
+            android:layout_width="70dp"
+            android:layout_height="35dp"
+            android:background="@drawable/round_stroke_white"
+            android:textColor="#fff"
+            android:textSize="12dp"
+            android:text="사진첨부"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"/>
+
+        <Button
+            android:id="@+id/bt_write_submit"
+            android:layout_width="70dp"
+            android:layout_height="35dp"
+            android:background="@drawable/round_stroke_white"
+            android:textColor="#fff"
+            android:textSize="12dp"
+            android:text="작성완료"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+        <!-- CPC -->
+        <com.fsn.cauly.CaulyAdView
+            xmlns:app="http://schemas.android.com/apk/res/com.kideuck"
+            android:id="@+id/xmladview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:appcode="X4ugHCy7"
+            app:effect="RightSlide"
+            app:bannerHeight="Proportional"
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="right"
+        android:layout_marginTop="5dp"
+        android:background="#fff">
+        <TextView
+            android:id="@+id/tv_write_text_cnt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:layout_gravity="right"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" / 200"
+            android:layout_marginRight="10dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:background="@color/greyBg"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginBottom="20dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="#fff"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/et_write_content"
+                android:padding="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="오늘 당신의 키득은 무엇인가요?"
+                android:textSize="12dp"
+                android:focusable="true"
+                android:maxLength="200"
+                />
+        </LinearLayout>
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/iv_write_selected"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior" tools:showIn="@layout/app_bar_main"
+    tools:context=".Activity.MainActivity"
+    android:background="@color/greyBg"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/actionbar_icon"
+            android:layout_width="70dp"
+            android:layout_height="55dp"
+            android:src="@drawable/pingu_head"
+            android:layout_gravity="left|bottom"
+            android:layout_marginLeft="20dp"/>
+        <TextView
+            android:id="@+id/actionbar_kiki"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="26dp"
+            android:text="$0"
+            android:textColor="#fff"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/actionbar_write"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/icon_pen3"
+            android:textColor="#fff"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="10dp"
+        />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+        <!-- CPC -->
+        <com.fsn.cauly.CaulyAdView
+            xmlns:app="http://schemas.android.com/apk/res/com.kideuck"
+            android:id="@+id/xmladview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:appcode="X4ugHCy7"
+            app:effect="RightSlide"
+            app:bannerHeight="Proportional"
+            />
+    </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/ll_frag_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+</LinearLayout>
