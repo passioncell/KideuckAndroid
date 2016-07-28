@@ -21,13 +21,14 @@ public class Posting {
     public int isUpDown;
     public boolean isWriter;
     public int postingId;
+    public Drawable attachedImg;
 
 
     public Posting() {
     }
 
     public Posting(String content, String date, Drawable deleteButton, String commentCnt, int totalVoteCount,
-                   Drawable upButton, Drawable downButton, int isUpDown, boolean isWriter, int postingId) {
+                   Drawable upButton, Drawable downButton, int isUpDown, boolean isWriter, int postingId, Drawable attachedImg) {
         this.content = content;
         this.date = date;
         this.deleteButton = deleteButton;
@@ -38,6 +39,7 @@ public class Posting {
         this.isUpDown = isUpDown;
         this.isWriter = isWriter;
         this.postingId = postingId;
+        this.attachedImg = attachedImg;
     }
 
     public String getContent() {
@@ -118,5 +120,13 @@ public class Posting {
 
     public void setPostingId(int postingId) {
         this.postingId = postingId;
+    }
+
+    public Drawable getAttachedImg() {
+        return attachedImg;
+    }
+
+    public void setAttachedImg(Drawable attachedImg) {
+        this.attachedImg = attachedImg;
     }
 }

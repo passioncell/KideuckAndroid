@@ -38,6 +38,7 @@ import com.kidueck.R;
 import com.kidueck.Util.ActivityResultBus;
 import com.kidueck.Util.ActivityResultEvent;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -314,6 +315,7 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
             final ViewHolder holder;
             if(convertView == null){
                 holder = new ViewHolder();
@@ -330,6 +332,9 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
                 holder.upButton = (ImageButton) convertView.findViewById(R.id.ib_feed_up);
                 holder.downButton = (ImageButton) convertView.findViewById(R.id.ib_feed_down);
                 holder.writerIcon = (ImageView) convertView.findViewById(R.id.iv_feed_writer_icon);
+
+                //첨부이미지
+                holder.attachdImg = (ImageView) convertView.findViewById(R.id.iv_feed_attached_img);
 
                 holder.upButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -405,6 +410,8 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
             holder.upButton.setTag(position);
             holder.downButton.setTag(position);
 
+            Picasso.with(getContext()).load("http://dayot.seobuchurch.or.kr/upload/post/395/1.jpg").into(holder.attachdImg);
+
             return convertView;
         }
 
@@ -448,6 +455,7 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
         public TextView totalVoteCnt; //업다운 총점
         public ImageButton upButton;
         public ImageButton downButton;
+        public ImageView attachdImg;
     }//view holder class ();;
 
     //포스팅 리스트 가져올 내부클래스(쓰레드)
