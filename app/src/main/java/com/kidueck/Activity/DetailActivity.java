@@ -196,6 +196,7 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //리스트뷰 행 클릭
         Intent intent = new Intent(DetailActivity.this, DeepCommentActivity.class);
+        intent.putExtra("selectedCommentId", String.valueOf(vector.get(position-1).commentId));
         startActivity(intent);
 
     }
@@ -373,11 +374,6 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
             datas.add(addInfo);
         }
 
-        public void clearAllData()
-        {
-            datas.clear();
-            this.notifyDataSetChanged();
-        }
     }//Adapter class ();;
 
 

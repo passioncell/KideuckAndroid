@@ -5,34 +5,44 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
+import com.kidueck.Model.DeepCommentListModel;
 import com.kidueck.R;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Created by system777 on 2016-07-22.
  */
 public class DeepCommentAdapter extends BaseAdapter {
 
-    // 문자열을 보관 할 ArrayList
-    private ArrayList<String>   m_List;
+    private Vector<DeepCommentListModel> deepCommentList;
+    TextView textView;
+    TextView textView2;
 
     // 생성자
-    public DeepCommentAdapter() {
-        m_List = new ArrayList<String>();
+    public DeepCommentAdapter(Vector<DeepCommentListModel> data) {
+        deepCommentList = data;
     }
+
+    public void updateList(Vector<DeepCommentListModel> data) {
+        deepCommentList = null;
+        deepCommentList = data;
+        notifyDataSetChanged();
+    }
+
 
     // 현재 아이템의 수를 리턴
     @Override
     public int getCount() {
-        return m_List.size();
+        return deepCommentList.size();
     }
 
     // 현재 아이템의 오브젝트를 리턴, Object를 상황에 맞게 변경하거나 리턴받은 오브젝트를 캐스팅해서 사용
     @Override
     public Object getItem(int position) {
-        return m_List.get(position);
+        return deepCommentList.get(position);
     }
 
     // 아이템 position의 ID 값 리턴
@@ -46,6 +56,7 @@ public class DeepCommentAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         final int pos = position;
         final Context context = parent.getContext();
+        CustomHolder    holder  = null;
 
         // 리스트가 길어지면서 현재 화면에 보이지 않는 아이템은 converView가 null인 상태로 들어 옴
         if ( convertView == null ) {
@@ -53,19 +64,39 @@ public class DeepCommentAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.listitem_deep_comment, parent, false);
 
+            textView = (TextView) convertView.findViewById(R.id.tv_deep_list_content);
+            textView2 = (TextView) convertView.findViewById(R.id.tv_deep_list_date);
 
+            // 홀더 생성 및 Tag로 등록
+            holder = new CustomHolder();
+            holder.textView  = textView;
+            holder.textView2  = textView2;
+            convertView.setTag(holder);
+
+        }else{
+            holder  = (CustomHolder) convertView.getTag();
+            textView    = holder.textView;
+            textView2     = holder.textView2;
         }
 
+        textView.setText(deepCommentList.get(position).getContent());
+        textView2.setText(deepCommentList.get(position).getWriteDate());
         return convertView;
     }
 
     // 외부에서 아이템 추가 요청 시 사용
-    public void add(String _msg) {
-        m_List.add(_msg);
+    public void addItem(DeepCommentListModel model){
+        deepCommentList.add(model);
     }
+
 
     // 외부에서 아이템 삭제 요청 시 사용
     public void remove(int _position) {
-        m_List.remove(_position);
+        deepCommentList.remove(_position);
+    }
+
+    private class CustomHolder {
+        TextView  textView;
+        TextView textView2;
     }
 }

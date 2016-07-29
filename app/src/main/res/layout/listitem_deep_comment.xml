@@ -19,14 +19,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp">
                 <TextView
-                    android:id="@+id/tv_comment_date"
+                    android:id="@+id/tv_deep_list_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="3일전"
                     android:textSize="12dp"
                     android:layout_marginRight="10dp"/>
                 <ImageButton
-                    android:id="@+id/ib_detail_writer"
+                    android:id="@+id/ib_deep_list_delete"
                     android:layout_width="20dp"
                     android:layout_height="11dp"
                     android:background="@drawable/icon_delete"
@@ -35,7 +35,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_comment_content"
+                android:id="@+id/tv_deep_list_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12dp"

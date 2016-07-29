@@ -23,6 +23,9 @@ public class URLInfo {
     public final static String Setting_WriteInquiry = WEB_SERVER_IP + "/Setting/WriteInquiry"; //문의사항 전송
     public final static String Member_GetUserPoint = WEB_SERVER_IP + "/Member/GetUserPoint"; // GET 유저 포인트트
     public final static String Posting_UploadImage = WEB_SERVER_IP + "/Posting/WritePostingWithImage"; // 포스팅 이미지 전송
+    public final static String Comment_WriteDeepComment = WEB_SERVER_IP + "/Comment/WriteDeepComment"; // 댓글의 댓글 작성
+    public final static String Comment_GetDeepCommentList = WEB_SERVER_IP + "/Comment/GetDeepCommentList"; // 댓글의 댓글 작성
+    public final static String Comment_GetDeepCommentDetail = WEB_SERVER_IP + "/Comment/GetDeepCommentDetail"; // 댓글의 댓글 디테일
 
 
     public String getWebServerIp(){

@@ -6,6 +6,7 @@ import com.kidueck.Abstract.ICommentRepository;
 import com.kidueck.Common.HttpMessage;
 import com.kidueck.Common.URLInfo;
 import com.kidueck.Model.CommentListModel;
+import com.kidueck.Model.DeepCommentListModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,10 +25,18 @@ public class CommentRepository implements ICommentRepository {
     private URL url;
     private HttpMessage httpMessage;
 
+    //댓글
     private CommentListModel commentListModel;
     private Vector<CommentListModel> vector = new Vector<>();
-
     org.json.JSONObject Obj;
+
+    //댓글의 댓글
+    private DeepCommentListModel deepCommentListModel;
+    private Vector<DeepCommentListModel> deepVector = new Vector<>();
+
+    //댓글의 댓글 디테일
+    private DeepCommentListModel deepCommentDetail;
+
 
     @Override
     public Vector<CommentListModel> getCommentList(int userId, int postingId, int pageNumber) {
@@ -88,5 +97,104 @@ public class CommentRepository implements ICommentRepository {
 
             return false;
         }
+    }
+
+    @Override
+    public Vector<DeepCommentListModel> getDeepCommentList(int userId, int commentId, int pageNumber) {
+        try {
+            url = new URL(URLInfo.Comment_GetDeepCommentList);
+            httpMessage = new HttpMessage(url);
+            Properties prop = new Properties();
+            prop.setProperty("userId", String.valueOf(userId));
+            prop.setProperty("commentId", String.valueOf(commentId));
+            prop.setProperty("pageNumber", String.valueOf(pageNumber));
+
+            String result = HttpMessage.convertStreamToString(httpMessage.sendGetMessage(prop));
+
+            JSONArray array = new JSONArray(result);
+
+            for(int i = 0; i < array.length(); i++) {
+                Obj = (org.json.JSONObject) array.get(i);
+                deepCommentListModel = new DeepCommentListModel(
+                        Integer.parseInt(Obj.get("deepCommentId").toString()),
+                        Obj.get("writeDate").toString(),
+                        Boolean.parseBoolean(Obj.get("isDeepCommenter").toString()),
+                        Obj.get("content").toString(),
+                        Obj.get("lat").toString(),  Obj.get("lon").toString()
+                );
+
+                deepVector.add(deepCommentListModel);
+
+            }
+
+        } catch (IOException e1) {
+
+            Log.d(TAG, e1.getMessage());
+
+            return null;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return deepVector;
+    }
+
+    @Override
+    public boolean writeDeepComment(int userId, int commentId, String content) {
+        try {
+            url = new URL(URLInfo.Comment_WriteDeepComment);
+            httpMessage = new HttpMessage(url);
+            Properties prop = new Properties();
+            prop.setProperty("userId", String.valueOf(userId));
+            prop.setProperty("commentId", String.valueOf(commentId));
+            prop.setProperty("content", content);
+            return Boolean.parseBoolean(HttpMessage.getWebContentText(httpMessage.sendGetMessage(prop)));
+
+        } catch (IOException e1) {
+
+            Log.d(TAG,  e1.getMessage());
+
+            return false;
+        }
+    }
+
+    @Override
+    public DeepCommentListModel getDeepCommentDetail(int userId, int commentId) {
+        try {
+            url = new URL(URLInfo.Comment_GetDeepCommentDetail);
+            httpMessage = new HttpMessage(url);
+            Properties prop = new Properties();
+            prop.setProperty("userId", String.valueOf(userId));
+            prop.setProperty("commentId", String.valueOf(commentId));
+
+            String result = HttpMessage.convertStreamToString(httpMessage.sendGetMessage(prop));
+
+            JSONArray array = new JSONArray(result);
+
+            for(int i = 0; i < array.length(); i++) {
+                Obj = (org.json.JSONObject) array.get(i);
+                deepCommentDetail = new DeepCommentListModel(
+                        Integer.parseInt(Obj.get("deepCommentId").toString()),
+                        Obj.get("writeDate").toString(),
+                        Boolean.parseBoolean(Obj.get("isDeepCommenter").toString()),
+                        Obj.get("content").toString(),
+                        Obj.get("lat").toString(),  Obj.get("lon").toString()
+                );
+
+
+            }
+
+        } catch (IOException e1) {
+
+            Log.d(TAG, e1.getMessage());
+
+            return null;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return deepCommentDetail;
     }
 }
