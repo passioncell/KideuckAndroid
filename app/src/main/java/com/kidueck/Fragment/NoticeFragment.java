@@ -180,9 +180,12 @@ public class NoticeFragment extends Fragment implements AdapterView.OnItemClickL
             }else if(datas.get(position).getLogCategory() == 3){ //COMMENT
                 holder.noticeImage.setBackground(getResources().getDrawable(R.drawable.icon_notice_comment));
                 holder.type.setText("회원님의 게시글에 댓글이 달렸습니다.");
-            }else{ //DELETE
+            }else if(datas.get(position).getLogCategory() == 4){ // DELETE
                 holder.noticeImage.setBackground(getResources().getDrawable(R.drawable.icon_notice_delete));
                 holder.type.setText("회원님의 게시글이 -5가 되어 삭제되었습니다.");
+            }else if(datas.get(position).getLogCategory() == 5){ // DEEP COMMENT
+                holder.noticeImage.setBackground(getResources().getDrawable(R.drawable.icon_notice_comment));
+                holder.type.setText("회원님의 댓글에 댓글이 달렸습니다.");
             }
 
             holder.date.setText(data.logDate.toString());

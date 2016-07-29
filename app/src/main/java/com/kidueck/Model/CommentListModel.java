@@ -11,12 +11,14 @@ public class CommentListModel {
     public String lat;
     public String lon;
     public boolean isVisible;
+    public int deepCommentCnt;
 
     public CommentListModel(){
 
     }
 
-    public CommentListModel(int commentId, String writeDate, boolean isCommenter, String content, String lat, String lon, boolean isVisible) {
+    public CommentListModel(int commentId, String writeDate, boolean isCommenter, String content, String lat, String lon, boolean isVisible,
+                            int deepCommentCnt) {
         this.commentId = commentId;
         this.writeDate = writeDate;
         this.isCommenter = isCommenter;
@@ -24,6 +26,7 @@ public class CommentListModel {
         this.lat = lat;
         this.lon = lon;
         this.isVisible = isVisible;
+        this.deepCommentCnt = deepCommentCnt;
     }
 
     public int getCommentId() {
@@ -80,5 +83,13 @@ public class CommentListModel {
 
     public void setIsVisible(boolean isVisible) {
         this.isVisible = isVisible;
+    }
+
+    public int getDeepCommentCnt() {
+        return deepCommentCnt;
+    }
+
+    public void setDeepCommentCnt(int deepCommentCnt) {
+        this.deepCommentCnt = deepCommentCnt;
     }
 }

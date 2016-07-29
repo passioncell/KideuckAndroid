@@ -60,7 +60,8 @@ public class CommentRepository implements ICommentRepository {
                         Boolean.parseBoolean(Obj.get("isCommenter").toString()),
                         Obj.get("content").toString(),
                         Obj.get("lat").toString(),  Obj.get("lon").toString(),
-                        Boolean.parseBoolean(Obj.get("isVisible").toString())
+                        Boolean.parseBoolean(Obj.get("isVisible").toString()),
+                        Integer.parseInt(Obj.get("deepCommentCnt").toString())
                 );
 
                 vector.add(commentListModel);

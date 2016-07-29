@@ -404,12 +404,8 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) { //SDK 15이상만 지원
                     holder.downButton.setBackground(getResources().getDrawable(R.drawable.icon_down_on));
                 }
-            }else{
-
             }
 
-            holder.upButton.setTag(position);
-            holder.downButton.setTag(position);
 
             holder.attachdImg.setImageDrawable(null);
 
@@ -417,7 +413,8 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
                 Picasso.with(getContext()).load(new URLInfo().getPostImgUploadUrl() + data.getPostingId() + "/1.jpg").into(holder.attachdImg);
             }
 
-
+            holder.upButton.setTag(position);
+            holder.downButton.setTag(position);
 
             return convertView;
         }

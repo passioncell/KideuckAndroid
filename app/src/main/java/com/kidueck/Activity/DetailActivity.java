@@ -326,6 +326,7 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
                 holder.comment = (TextView) convertView.findViewById(R.id.tv_comment_content);
                 holder.date = (TextView) convertView.findViewById(R.id.tv_comment_date);
                 holder.isCommenterIcon = (ImageView) convertView.findViewById(R.id.ib_comment_writer);
+                holder.deepCommentCnt = (TextView) convertView.findViewById(R.id.tv_comment_deep_cnt);
 
                 convertView.setTag(holder);
             }else{
@@ -342,6 +343,9 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
             }else{
                 holder.isCommenterIcon.setVisibility(View.GONE);
             }
+
+            String deepCommentCntToString = String.valueOf(data.deepCommentcnt);
+            holder.deepCommentCnt.setText(deepCommentCntToString+"개의 댓글");
 
             return convertView;
         }
@@ -370,6 +374,7 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
             addInfo.lat = commentListModel.getLat();
             addInfo.lon = commentListModel.getLon();
             addInfo.isVisible = commentListModel.isVisible();
+            addInfo.deepCommentcnt = commentListModel.getDeepCommentCnt();
 
             datas.add(addInfo);
         }
@@ -381,6 +386,7 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
         public ImageView isCommenterIcon;
         public TextView comment;
         public TextView date;
+        public TextView deepCommentCnt;
     }//ViewHolder Class();
 
 

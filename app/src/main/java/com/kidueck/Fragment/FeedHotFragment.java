@@ -31,18 +31,26 @@ import com.google.android.gms.analytics.Tracker;
 import com.kidueck.Activity.DetailActivity;
 import com.kidueck.Common.ApplicationController;
 import com.kidueck.Common.PointReceiver;
+import com.kidueck.Common.URLInfo;
 import com.kidueck.Concrete.PostingRepository;
 import com.kidueck.ListData.Posting;
 import com.kidueck.Model.PostingListModel;
 import com.kidueck.R;
+import com.kidueck.Util.ActivityResultBus;
+import com.kidueck.Util.ActivityResultEvent;
+import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
 /**
- * Created by system777 on 2016-07-08.
+ * Created by system777 on 2016-06-25.
  */
-public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemClickListener, AbsListView.OnScrollListener, View.OnClickListener {
+public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClickListener, AbsListView.OnScrollListener, View.OnClickListener {
+
+    public static int REQUEST_DETAIL = 100;
+
     View view;
 
     private ListView mListView = null;
@@ -64,6 +72,11 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
     Button btn_new;
     Button btn_hot;
     Button btn_my;
+
+    //UI REFRESH
+    int selectedListviewPosition;
+
+    ArrayList<Posting> datas = new ArrayList();
 
     public static FeedHotFragment newInstance() {
         FeedHotFragment fragment = new FeedHotFragment();
@@ -108,18 +121,92 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
         mListView.setOnScrollListener(this);
         mListView.setAdapter(mAdapter);
 
-        new GetHotPostingList().execute();
+        new GetPostingList().execute();
 
     }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //리스트뷰 행 클릭
+        selectedListviewPosition = position;
         Intent intent = new Intent(getActivity(),DetailActivity.class);
         intent.putExtra("selectedPostingId", vector.get(position).postingId);
-        getActivity().startActivity(intent);
+        getActivity().startActivityForResult(intent, REQUEST_DETAIL);
 
     }
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Don't forget to check requestCode before continuing your job
+        if (requestCode == REQUEST_DETAIL) {
+            // Do your job
+
+            int getChangedCommentCnt = data.getIntExtra("commentCnt", 0);
+            int getChangedIsUpDown = data.getIntExtra("isUpDownType", 0);
+
+
+            Posting model = new Posting();
+            model = datas.get(selectedListviewPosition);
+
+            if(getChangedCommentCnt != 0){
+                datas.get(selectedListviewPosition).setCommentCnt(String.valueOf(
+                        Integer.parseInt(datas.get(selectedListviewPosition).getCommentCnt()) +
+                                getChangedCommentCnt));
+
+            }
+
+            if(getChangedIsUpDown == 1){
+                datas.get(selectedListviewPosition).setTotalVoteCount(datas.get(selectedListviewPosition).getTotalVoteCount() +
+                        1);
+                datas.get(selectedListviewPosition).setUpButton(getResources().getDrawable(R.drawable.icon_up_on));
+
+
+            }else if(getChangedIsUpDown == 2){
+                datas.get(selectedListviewPosition).setTotalVoteCount(datas.get(selectedListviewPosition).getTotalVoteCount() -
+                        1);
+                datas.get(selectedListviewPosition).setDownButton(getResources().getDrawable(R.drawable.icon_down_on));
+
+
+            }
+
+            mAdapter.notifyDataSetChanged();
+
+
+            Toast.makeText(getContext(), "댓글변화" + String.valueOf(getChangedCommentCnt)  +
+                    "업다운변화" + String.valueOf(getChangedIsUpDown) ,Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ActivityResultBus.getInstance().register(mActivityResultSubscriber);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ActivityResultBus.getInstance().unregister(mActivityResultSubscriber);
+    }
+
+    private Object mActivityResultSubscriber = new Object() {
+        @Subscribe
+        public void onActivityResultReceived(ActivityResultEvent event) {
+            int requestCode = event.getRequestCode();
+            int resultCode = event.getResultCode();
+            Intent data = event.getData();
+            onActivityResult(requestCode, resultCode, data);
+        }
+    };
+
+
+
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -147,7 +234,7 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
         mLockListView = true;
         pageNumber++;
 
-        new GetHotPostingList().execute();
+        new GetPostingList().execute();
 
     }
 
@@ -155,12 +242,15 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
     @Override
     public void onClick(View v) {
 
+        Tracker t = ((ApplicationController)getActivity().getApplication()).getTracker(ApplicationController.TrackerName.APP_TRACKER);
+
         switch (v.getId()){
             case R.id.bt_feed_new:
                 if(selectedCategoryIdx != 1){
                     FeedFragment feedFrag;
                     feedFrag = FeedFragment.newInstance();
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_frag_content, feedFrag).commit();
+                    t.send(new HitBuilders.EventBuilder().setCategory("FeedFragment").setAction("Press NEW Category").setLabel("New Category Click").build());
                 }
                 break;
             case R.id.bt_feed_hot:
@@ -168,6 +258,7 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
                     FeedHotFragment feedHotFrag;
                     feedHotFrag = FeedHotFragment.newInstance();
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_frag_content, feedHotFrag).commit();
+                    t.send(new HitBuilders.EventBuilder().setCategory("FeedFragment").setAction("Press Hot Category").setLabel("Hot Category Click").build());
                 }
                 break;
             case R.id.bt_feed_my:
@@ -175,11 +266,13 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
                     FeedMyFragment feedMyFag;
                     feedMyFag = FeedMyFragment.newInstance();
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_frag_content, feedMyFag).commit();
+                    t.send(new HitBuilders.EventBuilder().setCategory("FeedFragment").setAction("Press MY Category").setLabel("My Category Click").build());
                 }
                 break;
             default:
                 break;
         }
+
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -205,8 +298,6 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
     //ListView Adapter
     public class ListViewAdapter extends BaseAdapter {
         private Context mContext = null;
-        // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
-        ArrayList<Posting> datas = new ArrayList();
 
         // ListViewAdapter의 생성자
         public ListViewAdapter(Context mContext) {
@@ -220,10 +311,12 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
             return datas.size() ;
         }
 
+
         // position에 위치한 데이터를 화면에 출력하는데 사용될 View를 리턴. : 필수 구현
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
             final ViewHolder holder;
             if(convertView == null){
                 holder = new ViewHolder();
@@ -241,10 +334,14 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
                 holder.downButton = (ImageButton) convertView.findViewById(R.id.ib_feed_down);
                 holder.writerIcon = (ImageView) convertView.findViewById(R.id.iv_feed_writer_icon);
 
+                //첨부이미지
+                holder.attachdImg = (ImageView) convertView.findViewById(R.id.iv_feed_attached_img);
+
                 holder.upButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Tracker t = ((ApplicationController)getActivity().getApplication()).getTracker(ApplicationController.TrackerName.APP_TRACKER);
+
                         Integer pos = (Integer)v.getTag();
                         new VotePosting(datas.get(pos).getPostingId(), 1).execute();
                         if(datas.get(pos).isUpDown == 0){//투표한적없는경우 UP버튼 ON으로 변경 및 총점 +1
@@ -253,7 +350,7 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
                             mAdapter.notifyDataSetChanged();
                             //포인트 갱신
                             getContext().sendBroadcast(new Intent(getActivity(), PointReceiver.class));
-                            t.send(new HitBuilders.EventBuilder().setCategory("FeedHotFragment").setAction("Press UP Button").setLabel("UP Click").build());
+                            t.send(new HitBuilders.EventBuilder().setCategory("FeedFragment").setAction("Press UP Button").setLabel("UP Click").build());
 
                         }
                     }
@@ -262,6 +359,7 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
                     @Override
                     public void onClick(View v) {
                         Tracker t = ((ApplicationController)getActivity().getApplication()).getTracker(ApplicationController.TrackerName.APP_TRACKER);
+
                         Integer pos = (Integer)v.getTag();
                         new VotePosting(datas.get(pos).getPostingId(), 2).execute();
                         if(datas.get(pos).isUpDown == 0){//투표한적없는경우 DOWN버튼 ON으로 변경 및 총점 -1
@@ -270,7 +368,7 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
                             mAdapter.notifyDataSetChanged();
                             //포인트 갱신
                             getContext().sendBroadcast(new Intent(getActivity(), PointReceiver.class));
-                            t.send(new HitBuilders.EventBuilder().setCategory("FeedHotFragment").setAction("Press DOWN Button").setLabel("DOWN Click").build());
+                            t.send(new HitBuilders.EventBuilder().setCategory("FeedFragment").setAction("Press DOWN Button").setLabel("DOWN Click").build());
                         }
                     }
                 });
@@ -306,8 +404,13 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) { //SDK 15이상만 지원
                     holder.downButton.setBackground(getResources().getDrawable(R.drawable.icon_down_on));
                 }
-            }else{
+            }
 
+
+            holder.attachdImg.setImageDrawable(null);
+
+            if(data.isImage){
+                Picasso.with(getContext()).load(new URLInfo().getPostImgUploadUrl() + data.getPostingId() + "/1.jpg").into(holder.attachdImg);
             }
 
             holder.upButton.setTag(position);
@@ -315,6 +418,7 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
 
             return convertView;
         }
+
 
         // 지정한 위치(position)에 있는 데이터와 관계된 아이템(row)의 ID를 리턴. : 필수 구현
         @Override
@@ -340,9 +444,12 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
             addInfo.isUpDown = postingListModel.isUpDown;
             addInfo.isWriter = postingListModel.isWriter;
             addInfo.postingId = Integer.parseInt(postingListModel.postingId);
+            addInfo.isImage = postingListModel.isImage;
 
             datas.add(addInfo);
         }
+
+
     }//Adapter class ();;
 
     private class ViewHolder {
@@ -353,10 +460,11 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
         public TextView totalVoteCnt; //업다운 총점
         public ImageButton upButton;
         public ImageButton downButton;
+        public ImageView attachdImg;
     }//view holder class ();;
 
     //포스팅 리스트 가져올 내부클래스(쓰레드)
-    private class GetHotPostingList extends AsyncTask<Boolean, Void, Void> {
+    private class GetPostingList extends AsyncTask<Boolean, Void, Void> {
 
         ProgressDialog progressDialog;
 
@@ -390,7 +498,7 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
                 nowVectorSize = vector.size();
 
                 if(preVectorSize == nowVectorSize){ //이전벡터와 루프를 실행한 벡터 사이즈가 같으면 더이상 불러올 리스트가없는것임.
-                    //Snackbar.make(getView(), "페이지의 끝입니다.", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                    Snackbar.make(getView(), "페이지의 끝입니다.", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
                     mListView.setOnScrollListener(null);
                 }else{
                     //어뎁터에 벡터 데이터 추가
@@ -472,7 +580,7 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
         @Override
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("불러오는중..");
+            progressDialog.setMessage("처리중..");
             progressDialog.setCancelable(true);
             progressDialog.show();
         }
@@ -482,4 +590,5 @@ public class FeedHotFragment  extends Fragment implements  AdapterView.OnItemCli
             return Integer.parseInt(pref.getString("userId", ""));
         }
     }//VotePosting Class();;
+
 }
