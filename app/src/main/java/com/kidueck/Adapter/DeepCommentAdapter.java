@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kidueck.Model.DeepCommentListModel;
@@ -18,8 +19,9 @@ import java.util.Vector;
 public class DeepCommentAdapter extends BaseAdapter {
 
     private Vector<DeepCommentListModel> deepCommentList;
-    TextView textView;
-    TextView textView2;
+    TextView deepCommentContent;
+    TextView deepCommentDate;
+    ImageView isCommenter;
 
     // 생성자
     public DeepCommentAdapter(Vector<DeepCommentListModel> data) {
@@ -64,23 +66,32 @@ public class DeepCommentAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.listitem_deep_comment, parent, false);
 
-            textView = (TextView) convertView.findViewById(R.id.tv_deep_list_content);
-            textView2 = (TextView) convertView.findViewById(R.id.tv_deep_list_date);
+            deepCommentContent = (TextView) convertView.findViewById(R.id.tv_deep_list_content);
+            deepCommentDate = (TextView) convertView.findViewById(R.id.tv_deep_list_date);
+            isCommenter = (ImageView) convertView.findViewById(R.id.ib_deep_list_delete);
 
             // 홀더 생성 및 Tag로 등록
             holder = new CustomHolder();
-            holder.textView  = textView;
-            holder.textView2  = textView2;
+            holder.deepCommentContent  = deepCommentContent;
+            holder.deepCommentDate  = deepCommentDate;
+            holder.isCommenter = isCommenter;
             convertView.setTag(holder);
 
         }else{
             holder  = (CustomHolder) convertView.getTag();
-            textView    = holder.textView;
-            textView2     = holder.textView2;
+            deepCommentContent    = holder.deepCommentContent;
+            deepCommentDate     = holder.deepCommentDate;
+            isCommenter = holder.isCommenter;
         }
 
-        textView.setText(deepCommentList.get(position).getContent());
-        textView2.setText(deepCommentList.get(position).getWriteDate());
+        deepCommentContent.setText(deepCommentList.get(position).getContent());
+        deepCommentDate.setText(deepCommentList.get(position).getWriteDate());
+
+        isCommenter.setVisibility(View.GONE);
+        if(deepCommentList.get(position).isDeepCommenter()){
+            isCommenter.setVisibility(View.VISIBLE);
+        }
+
         return convertView;
     }
 
@@ -96,7 +107,8 @@ public class DeepCommentAdapter extends BaseAdapter {
     }
 
     private class CustomHolder {
-        TextView  textView;
-        TextView textView2;
+        TextView  deepCommentContent;
+        TextView deepCommentDate;
+        ImageView isCommenter;
     }
 }

@@ -176,8 +176,8 @@ public class FeedMyFragment extends Fragment implements  AdapterView.OnItemClick
             mAdapter.notifyDataSetChanged();
 
 
-            Toast.makeText(getContext(), "댓글변화" + String.valueOf(getChangedCommentCnt)  +
-                    "업다운변화" + String.valueOf(getChangedIsUpDown) ,Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "댓글변화" + String.valueOf(getChangedCommentCnt)  +
+//                    "업다운변화" + String.valueOf(getChangedIsUpDown) ,Toast.LENGTH_SHORT).show();
 
         }
     }

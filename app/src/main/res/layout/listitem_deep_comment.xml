@@ -31,7 +31,7 @@
                     android:layout_height="11dp"
                     android:background="@drawable/icon_delete"
                     android:layout_gravity="bottom"
-                    android:visibility="visible"/>
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <TextView
