@@ -34,6 +34,7 @@ import com.kidueck.Common.PointReceiver;
 import com.kidueck.Common.URLInfo;
 import com.kidueck.Concrete.PostingRepository;
 import com.kidueck.ListData.Posting;
+import com.kidueck.Model.FeedItemInfo;
 import com.kidueck.Model.PostingListModel;
 import com.kidueck.R;
 import com.kidueck.Util.ActivityResultBus;
@@ -49,7 +50,8 @@ import java.util.Vector;
  */
 public class FeedFragment extends Fragment implements  AdapterView.OnItemClickListener, AbsListView.OnScrollListener, View.OnClickListener {
 
-    public static int REQUEST_DETAIL = 100;
+    private final int REQUEST_DETAIL = 100;
+    public static FeedItemInfo feedItemInfo;
 
     View view;
 
@@ -90,12 +92,48 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
+        feedItemInfo = new FeedItemInfo();
         view = inflater.inflate(R.layout.fragment_feed, container, false);
         init(view);
         initListView(view);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (feedItemInfo != null && !(feedItemInfo.getCommentCnt() == 0 && feedItemInfo.getIsUpDownType() == 0)) {
+            int getChangedCommentCnt = feedItemInfo.getCommentCnt();
+            int getChangedIsUpDown = feedItemInfo.getIsUpDownType();
+
+
+            Posting model = new Posting();
+            model = datas.get(selectedListviewPosition);
+
+            if(getChangedCommentCnt != 0){
+                datas.get(selectedListviewPosition).setCommentCnt(String.valueOf(
+                        Integer.parseInt(datas.get(selectedListviewPosition).getCommentCnt()) +
+                                getChangedCommentCnt));
+
+            }
+
+            if(getChangedIsUpDown != 0) {
+                datas.get(selectedListviewPosition).setIsUpDown(getChangedIsUpDown);
+
+                if(getChangedIsUpDown == 1) {
+                    datas.get(selectedListviewPosition).setTotalVoteCount(datas.get(selectedListviewPosition).getTotalVoteCount() +
+                            1);
+                } else if(getChangedIsUpDown == 2) {
+                    datas.get(selectedListviewPosition).setTotalVoteCount(datas.get(selectedListviewPosition).getTotalVoteCount() -
+                            1);
+                }
+            }
+
+            feedItemInfo = new FeedItemInfo();
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     private void init(View view){
@@ -135,53 +173,6 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
         getActivity().startActivityForResult(intent, REQUEST_DETAIL);
 
     }
-
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Don't forget to check requestCode before continuing your job
-        if (requestCode == REQUEST_DETAIL) {
-            // Do your job
-
-            int getChangedCommentCnt = data.getIntExtra("commentCnt", 0);
-            int getChangedIsUpDown = data.getIntExtra("isUpDownType", 0);
-
-
-            Posting model = new Posting();
-            model = datas.get(selectedListviewPosition);
-
-            if(getChangedCommentCnt != 0){
-                datas.get(selectedListviewPosition).setCommentCnt(String.valueOf(
-                        Integer.parseInt(datas.get(selectedListviewPosition).getCommentCnt()) +
-                getChangedCommentCnt));
-
-            }
-
-            if(getChangedIsUpDown == 1){
-                datas.get(selectedListviewPosition).setTotalVoteCount(datas.get(selectedListviewPosition).getTotalVoteCount() +
-                        1);
-                datas.get(selectedListviewPosition).setUpButton(getResources().getDrawable(R.drawable.icon_up_on));
-
-
-            }else if(getChangedIsUpDown == 2){
-                datas.get(selectedListviewPosition).setTotalVoteCount(datas.get(selectedListviewPosition).getTotalVoteCount() -
-                        1);
-                datas.get(selectedListviewPosition).setDownButton(getResources().getDrawable(R.drawable.icon_down_on));
-
-
-            }
-
-            mAdapter.notifyDataSetChanged();
-
-
-//            Toast.makeText(getContext(), "댓글변화" + String.valueOf(getChangedCommentCnt)  +
-//                    "업다운변화" + String.valueOf(getChangedIsUpDown) ,Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
 
     @Override
     public void onStart() {

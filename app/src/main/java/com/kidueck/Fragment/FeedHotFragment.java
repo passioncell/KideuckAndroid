@@ -34,6 +34,7 @@ import com.kidueck.Common.PointReceiver;
 import com.kidueck.Common.URLInfo;
 import com.kidueck.Concrete.PostingRepository;
 import com.kidueck.ListData.Posting;
+import com.kidueck.Model.FeedItemInfo;
 import com.kidueck.Model.PostingListModel;
 import com.kidueck.R;
 import com.kidueck.Util.ActivityResultBus;
@@ -47,14 +48,15 @@ import java.util.Vector;
 /**
  * Created by system777 on 2016-06-25.
  */
-public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClickListener, AbsListView.OnScrollListener, View.OnClickListener {
+public class FeedHotFragment extends Fragment implements AdapterView.OnItemClickListener, AbsListView.OnScrollListener, View.OnClickListener {
 
     public static int REQUEST_DETAIL = 100;
+    public static FeedItemInfo feedItemInfo;
 
     View view;
 
     private ListView mListView = null;
-    private ListViewAdapter  mAdapter = null;
+    private ListViewAdapter mAdapter = null;
 
     public PostingRepository postingRepository = new PostingRepository();
     public Vector<PostingListModel> vector;
@@ -63,8 +65,8 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
     //페이징 관련
     private boolean mLockListView;
     int pageNumber = 1;
-    int preVectorSize=0;
-    int nowVectorSize=0;
+    int preVectorSize = 0;
+    int nowVectorSize = 0;
     boolean isFirstRoof = true;
 
     //카테고리
@@ -84,13 +86,16 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {super.onCreate(savedInstanceState);    }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
 
+        feedItemInfo = FeedFragment.feedItemInfo;
         view = inflater.inflate(R.layout.fragment_feed, container, false);
         init(view);
         initListView(view);
@@ -98,7 +103,7 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
         return view;
     }
 
-    private void init(View view){
+    private void init(View view) {
         btn_new = (Button) view.findViewById(R.id.bt_feed_new);
         btn_hot = (Button) view.findViewById(R.id.bt_feed_hot);
         btn_my = (Button) view.findViewById(R.id.bt_feed_my);
@@ -110,9 +115,9 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
         initCategoryButton(selectedCategoryIdx);
     }
 
-    private void initListView(View view){
+    private void initListView(View view) {
 
-        vector =  new Vector<PostingListModel>();
+        vector = new Vector<PostingListModel>();
         mAdapter = new ListViewAdapter(getContext());
         // 리스트뷰 참조 및 Adapter달기
         mListView = (ListView) view.findViewById(R.id.lv_feed);
@@ -130,23 +135,20 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //리스트뷰 행 클릭
         selectedListviewPosition = position;
-        Intent intent = new Intent(getActivity(),DetailActivity.class);
+        Intent intent = new Intent(getActivity(), DetailActivity.class);
         intent.putExtra("selectedPostingId", vector.get(position).postingId);
         getActivity().startActivityForResult(intent, REQUEST_DETAIL);
 
     }
 
 
-
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Don't forget to check requestCode before continuing your job
-        if (requestCode == REQUEST_DETAIL) {
-            // Do your job
+    public void onResume() {
+        super.onResume();
 
-            int getChangedCommentCnt = data.getIntExtra("commentCnt", 0);
-            int getChangedIsUpDown = data.getIntExtra("isUpDownType", 0);
+        if (feedItemInfo != null && !(feedItemInfo.getCommentCnt() == 0 && feedItemInfo.getIsUpDownType() == 0)) {
+            int getChangedCommentCnt = feedItemInfo.getCommentCnt();
+            int getChangedIsUpDown = feedItemInfo.getIsUpDownType();
 
 
             Posting model = new Posting();
@@ -159,29 +161,22 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
 
             }
 
-            if(getChangedIsUpDown == 1){
-                datas.get(selectedListviewPosition).setTotalVoteCount(datas.get(selectedListviewPosition).getTotalVoteCount() +
-                        1);
-                datas.get(selectedListviewPosition).setUpButton(getResources().getDrawable(R.drawable.icon_up_on));
+            if(getChangedIsUpDown != 0) {
+                datas.get(selectedListviewPosition).setIsUpDown(getChangedIsUpDown);
 
-
-            }else if(getChangedIsUpDown == 2){
-                datas.get(selectedListviewPosition).setTotalVoteCount(datas.get(selectedListviewPosition).getTotalVoteCount() -
-                        1);
-                datas.get(selectedListviewPosition).setDownButton(getResources().getDrawable(R.drawable.icon_down_on));
-
-
+                if(getChangedIsUpDown == 1) {
+                    datas.get(selectedListviewPosition).setTotalVoteCount(datas.get(selectedListviewPosition).getTotalVoteCount() +
+                            1);
+                } else if(getChangedIsUpDown == 2) {
+                    datas.get(selectedListviewPosition).setTotalVoteCount(datas.get(selectedListviewPosition).getTotalVoteCount() -
+                            1);
+                }
             }
 
+            feedItemInfo = new FeedItemInfo();
             mAdapter.notifyDataSetChanged();
-
-
-//            Toast.makeText(getContext(), "댓글변화" + String.valueOf(getChangedCommentCnt)  +
-//                    "업다운변화" + String.valueOf(getChangedIsUpDown) ,Toast.LENGTH_SHORT).show();
-
         }
     }
-
 
     @Override
     public void onStart() {
@@ -206,8 +201,6 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
     };
 
 
-
-
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
 
@@ -219,17 +212,15 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
         // 전체의 숫자와 동일해지면 가장 아래로 스크롤 되었다고 가정합니다.
         int count = totalItemCount - visibleItemCount;
 
-        if(firstVisibleItem >= count && totalItemCount != 0
-                && mLockListView == false)
-        {
+        if (firstVisibleItem >= count && totalItemCount != 0
+                && mLockListView == false) {
             Log.i("LOG", "Loading next items");
             addNextDatas();
         }
 
     }
 
-    private void addNextDatas()
-    {
+    private void addNextDatas() {
         // 아이템을 추가하는 동안 중복 요청을 방지하기 위해 락을 걸어둡니다.
         mLockListView = true;
         pageNumber++;
@@ -242,11 +233,11 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
     @Override
     public void onClick(View v) {
 
-        Tracker t = ((ApplicationController)getActivity().getApplication()).getTracker(ApplicationController.TrackerName.APP_TRACKER);
+        Tracker t = ((ApplicationController) getActivity().getApplication()).getTracker(ApplicationController.TrackerName.APP_TRACKER);
 
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.bt_feed_new:
-                if(selectedCategoryIdx != 1){
+                if (selectedCategoryIdx != 1) {
                     FeedFragment feedFrag;
                     feedFrag = FeedFragment.newInstance();
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_frag_content, feedFrag).commit();
@@ -254,7 +245,7 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
                 }
                 break;
             case R.id.bt_feed_hot:
-                if(selectedCategoryIdx != 2){
+                if (selectedCategoryIdx != 2) {
                     FeedHotFragment feedHotFrag;
                     feedHotFrag = FeedHotFragment.newInstance();
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_frag_content, feedHotFrag).commit();
@@ -262,7 +253,7 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
                 }
                 break;
             case R.id.bt_feed_my:
-                if(selectedCategoryIdx != 3){
+                if (selectedCategoryIdx != 3) {
                     FeedMyFragment feedMyFag;
                     feedMyFag = FeedMyFragment.newInstance();
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_frag_content, feedMyFag).commit();
@@ -276,8 +267,8 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void initCategoryButton(int selectedCategoryIdx){
-        switch (selectedCategoryIdx){
+    private void initCategoryButton(int selectedCategoryIdx) {
+        switch (selectedCategoryIdx) {
             case 1:
                 btn_new.setBackground(getResources().getDrawable(R.drawable.round_stroke_fill));
                 btn_new.setTextColor(Color.WHITE);
@@ -308,7 +299,7 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
         // Adapter에 사용되는 데이터의 개수를 리턴. : 필수 구현
         @Override
         public int getCount() {
-            return datas.size() ;
+            return datas.size();
         }
 
 
@@ -318,7 +309,7 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
         public View getView(int position, View convertView, ViewGroup parent) {
 
             final ViewHolder holder;
-            if(convertView == null){
+            if (convertView == null) {
                 holder = new ViewHolder();
 
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -340,11 +331,11 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
                 holder.upButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Tracker t = ((ApplicationController)getActivity().getApplication()).getTracker(ApplicationController.TrackerName.APP_TRACKER);
+                        Tracker t = ((ApplicationController) getActivity().getApplication()).getTracker(ApplicationController.TrackerName.APP_TRACKER);
 
-                        Integer pos = (Integer)v.getTag();
+                        Integer pos = (Integer) v.getTag();
                         new VotePosting(datas.get(pos).getPostingId(), 1).execute();
-                        if(datas.get(pos).isUpDown == 0){//투표한적없는경우 UP버튼 ON으로 변경 및 총점 +1
+                        if (datas.get(pos).isUpDown == 0) {//투표한적없는경우 UP버튼 ON으로 변경 및 총점 +1
                             datas.get(pos).totalVoteCount += 1;
                             datas.get(pos).isUpDown = 1;
                             mAdapter.notifyDataSetChanged();
@@ -358,11 +349,11 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
                 holder.downButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Tracker t = ((ApplicationController)getActivity().getApplication()).getTracker(ApplicationController.TrackerName.APP_TRACKER);
+                        Tracker t = ((ApplicationController) getActivity().getApplication()).getTracker(ApplicationController.TrackerName.APP_TRACKER);
 
-                        Integer pos = (Integer)v.getTag();
+                        Integer pos = (Integer) v.getTag();
                         new VotePosting(datas.get(pos).getPostingId(), 2).execute();
-                        if(datas.get(pos).isUpDown == 0){//투표한적없는경우 DOWN버튼 ON으로 변경 및 총점 -1
+                        if (datas.get(pos).isUpDown == 0) {//투표한적없는경우 DOWN버튼 ON으로 변경 및 총점 -1
                             datas.get(pos).totalVoteCount -= 1;
                             datas.get(pos).isUpDown = -1;
                             mAdapter.notifyDataSetChanged();
@@ -374,7 +365,7 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
                 });
 
                 convertView.setTag(holder);
-            }else{
+            } else {
                 holder = (ViewHolder) convertView.getTag();
             }
 
@@ -383,9 +374,9 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
             holder.content.setText(data.content);
             holder.date.setText(data.date);
             holder.writerIcon.setImageDrawable(data.deleteButton);
-            if(datas.get(position).isWriter) { //글쓴이가 아니면 감추기
+            if (datas.get(position).isWriter) { //글쓴이가 아니면 감추기
                 holder.writerIcon.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.writerIcon.setVisibility(View.GONE);
             }
             holder.commentCnt.setText(data.commentCnt);
@@ -396,11 +387,11 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
             holder.downButton.setBackground((getResources().getDrawable(R.drawable.icon_down_off)));
 
             //업다운 버튼 눌렀는지 확인후 on/off 적용
-            if(datas.get(position).isUpDown == 1 ){ //UP을 눌렀었던 경우
+            if (datas.get(position).isUpDown == 1) { //UP을 눌렀었던 경우
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) { //SDK 15이상만 지원
                     holder.upButton.setBackground(getResources().getDrawable(R.drawable.icon_up_on));
                 }
-            }else if(datas.get(position).isUpDown == -1 ){ //DOWN을 눌렀었던 경우
+            } else if (datas.get(position).isUpDown == -1) { //DOWN을 눌렀었던 경우
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) { //SDK 15이상만 지원
                     holder.downButton.setBackground(getResources().getDrawable(R.drawable.icon_down_on));
                 }
@@ -409,7 +400,7 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
 
             holder.attachdImg.setImageDrawable(null);
 
-            if(data.isImage){
+            if (data.isImage) {
                 Picasso.with(getContext()).load(new URLInfo().getPostImgUploadUrl() + data.getPostingId() + "/1.jpg").into(holder.attachdImg);
             }
 
@@ -423,13 +414,13 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
         // 지정한 위치(position)에 있는 데이터와 관계된 아이템(row)의 ID를 리턴. : 필수 구현
         @Override
         public long getItemId(int position) {
-            return position ;
+            return position;
         }
 
         // 지정한 위치(position)에 있는 데이터 리턴 : 필수 구현
         @Override
         public Object getItem(int position) {
-            return datas.get(position) ;
+            return datas.get(position);
         }
 
         // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
@@ -470,12 +461,10 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
 
         @Override
         protected Void doInBackground(Boolean... params) {
-            try
-            {
+            try {
                 //Getting data from server
                 vector = postingRepository.getHotPostingList(getUserId(), pageNumber);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -486,23 +475,23 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
         protected void onPostExecute(Void aVoid) {
             progressDialog.dismiss();
 
-            if(isFirstRoof){ //첫루프
+            if (isFirstRoof) { //첫루프
                 nowVectorSize = vector.size();
                 //어뎁터에 벡터 데이터 추가
-                for(int i=(pageNumber-1)*10; i<vector.size(); i++){
+                for (int i = (pageNumber - 1) * 10; i < vector.size(); i++) {
                     mAdapter.addItem(vector.get(i));
                 }
                 isFirstRoof = false;
-            }else{
+            } else {
                 preVectorSize = nowVectorSize;
                 nowVectorSize = vector.size();
 
-                if(preVectorSize == nowVectorSize){ //이전벡터와 루프를 실행한 벡터 사이즈가 같으면 더이상 불러올 리스트가없는것임.
+                if (preVectorSize == nowVectorSize) { //이전벡터와 루프를 실행한 벡터 사이즈가 같으면 더이상 불러올 리스트가없는것임.
                     Snackbar.make(getView(), "페이지의 끝입니다.", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
                     mListView.setOnScrollListener(null);
-                }else{
+                } else {
                     //어뎁터에 벡터 데이터 추가
-                    for(int i=(pageNumber-1)*10; i<vector.size(); i++){
+                    for (int i = (pageNumber - 1) * 10; i < vector.size(); i++) {
                         mAdapter.addItem(vector.get(i));
                     }
                 }
@@ -520,8 +509,8 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
             progressDialog.show();
         }
 
-        private int getUserId(){
-            SharedPreferences pref =  getActivity().getSharedPreferences("userId", Context.MODE_PRIVATE);
+        private int getUserId() {
+            SharedPreferences pref = getActivity().getSharedPreferences("userId", Context.MODE_PRIVATE);
             return Integer.parseInt(pref.getString("userId", ""));
         }
     }//GetPostingList Class();;
@@ -532,19 +521,17 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
         int postingId;
         int type;
 
-        public VotePosting(int postingId, int type){
+        public VotePosting(int postingId, int type) {
             this.postingId = postingId;
-            this.type =type;
+            this.type = type;
         }
 
         @Override
         protected Void doInBackground(Boolean... params) {
-            try
-            {
+            try {
                 //Getting data from server
                 voteResult = postingRepository.votePosting(getUserId(), postingId, type);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -557,13 +544,14 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
 
             if (voteResult) {
                 getActivity().setResult(Activity.RESULT_OK, null);
-                if(type == 1){
+                if (type == 1) {
                     Snackbar.make(getView(), "해당 게시물을 UP 하였습니다.", Snackbar.LENGTH_SHORT).setAction("Action", null).setAction("닫기", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                         }
-                    }).show();;
-                }else{
+                    }).show();
+                    ;
+                } else {
                     Snackbar.make(getView(), "해당 게시물을 DOWN 하였습니다.", Snackbar.LENGTH_SHORT).setAction("Action", null).setAction("닫기", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -571,7 +559,7 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
                     }).show();
                 }
 
-            }else {
+            } else {
                 getActivity().setResult(Activity.RESULT_CANCELED, null);
                 Toast.makeText(getContext(), "이미 투표를 하셨습니다.", Toast.LENGTH_SHORT).show();
             }
@@ -585,8 +573,8 @@ public class FeedHotFragment extends Fragment implements  AdapterView.OnItemClic
             progressDialog.show();
         }
 
-        private int getUserId(){
-            SharedPreferences pref =  getActivity().getSharedPreferences("userId", Context.MODE_PRIVATE);
+        private int getUserId() {
+            SharedPreferences pref = getActivity().getSharedPreferences("userId", Context.MODE_PRIVATE);
             return Integer.parseInt(pref.getString("userId", ""));
         }
     }//VotePosting Class();;
