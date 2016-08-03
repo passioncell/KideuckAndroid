@@ -175,7 +175,5 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
             progressDialog.setCancelable(true);
             progressDialog.show();
         }
-
     }//GetLatestVersionName Class();;
-
 }

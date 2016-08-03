@@ -64,8 +64,6 @@
 
         <activity android:name=".Activity.DeepCommentActivity"></activity>
 
-        <activity android:name=".Activity.TestActivity"></activity>
-
         <activity android:name=".Activity.DetailPostImage"></activity>
 
         <!-- 페이스북 공유하기 -->
