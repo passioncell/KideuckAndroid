@@ -38,6 +38,7 @@ import com.kidueck.Common.PointReceiver;
 import com.kidueck.Common.URLInfo;
 import com.kidueck.Concrete.CommentRepository;
 import com.kidueck.Concrete.PostingRepository;
+import com.kidueck.Fragment.FeedFragment;
 import com.kidueck.ListData.Comment;
 import com.kidueck.Model.CommentListModel;
 import com.kidueck.Model.DetailPostingModel;
@@ -283,12 +284,6 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
     public void onBackPressed() {
        // super.onBackPressed();
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        // 댓글과 UP DOWN 변화를 FeedFragment에 알림.
-        intent.putExtra("commentCnt", changedCommentCnt);
-        intent.putExtra("isUpDownType", changedIsUpDown);
-
-        setResult(RESULT_OK, intent);
         finish();
 
     }
@@ -551,6 +546,8 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            FeedFragment.feedItemInfo.setCommentCnt(++changedCommentCnt);
+
             progressDialog.dismiss();
 
             runOnUiThread(new Runnable() {
@@ -561,12 +558,8 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
                     Toast.makeText(getApplicationContext(), "댓글이 등록되었습니다", Toast.LENGTH_SHORT).show();
                     recreate();
                     sendBroadcast(new Intent(MainActivity.getInstace(), PointReceiver.class));
-
                 }
             });
-            changedCommentCnt++;
-
-
         }
 
         @Override
@@ -627,6 +620,8 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
                 setResult(Activity.RESULT_CANCELED, null);
                 Toast.makeText(getApplicationContext(), "이미 투표를 하셨습니다.", Toast.LENGTH_SHORT).show();
             }
+
+            FeedFragment.feedItemInfo.setIsUpDownType(changedIsUpDown);
         }
 
         @Override
