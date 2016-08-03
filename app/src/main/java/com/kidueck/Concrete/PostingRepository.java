@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
@@ -51,6 +52,7 @@ public class PostingRepository implements IPostingRepository {
     private FileUpload fileUpload;
     private File file;
     public static Uri mImageCaptureUri;
+    public static List<Uri> mImageCaptureUris;
     private static Map<String, String> mParameters = new HashMap<String, String>();
 
     public PostingRepository() {
@@ -267,6 +269,21 @@ public class PostingRepository implements IPostingRepository {
         return full_path;
     }
 
+    @Override
+    public String multiUpload(Intent data, ContentResolver contentResolver) {
+        file = null;
+        fileUpload = new FileUpload(mContext, mActivity, mParameters);
+
+        mImageCaptureUri = data.getData();
+        file = getImageFile(mImageCaptureUri, contentResolver);
+        String full_path = file.getAbsolutePath();
+
+        new FileUploadAsyncTask().execute(full_path);
+
+        return full_path;
+
+    }
+
 
     private File getImageFile(Uri uri, ContentResolver contentResolver) {
         String[] projection = { MediaStore.Images.Media.DATA };
@@ -301,8 +318,10 @@ public class PostingRepository implements IPostingRepository {
         @Override
         protected Void doInBackground(String... params) {
 
-            fileUpload.HttpFileUpload(mContext, "", params[0], URLInfo.Posting_UploadImage);
+            fileUpload.HttpFileUpload(mContext, "", params[0], URLInfo.Posting_MultiUpload);
             return null;
         }
     }
+
+
 }

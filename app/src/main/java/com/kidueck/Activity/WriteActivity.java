@@ -5,10 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,9 +18,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kidueck.Common.PointReceiver;
+import com.kidueck.Common.URLInfo;
 import com.kidueck.Concrete.PostingRepository;
 import com.kidueck.Fragment.FeedFragment;
 import com.kidueck.R;
+import com.kidueck.Util.MultipartUtility;
+import com.yongbeam.y_photopicker.util.photopicker.PhotoPickerActivity;
+import com.yongbeam.y_photopicker.util.photopicker.utils.YPhotoPickerIntent;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by Hyeonbae on 2016-07-10.
@@ -47,6 +53,7 @@ public class WriteActivity extends Activity implements View.OnClickListener {
     boolean isImage = false;
     int requestCode, resultCode;
     Intent data;
+    List<String> photos = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,10 +110,18 @@ public class WriteActivity extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.bt_write_image:
-                Intent clsIntent = new Intent(Intent.ACTION_PICK);
-                clsIntent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-                clsIntent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(clsIntent, 100);
+//                Intent clsIntent = new Intent(Intent.ACTION_PICK);
+//                clsIntent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+//                clsIntent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(clsIntent, 100);
+
+                YPhotoPickerIntent intent = new YPhotoPickerIntent(this);
+                intent.setMaxSelectCount(20);
+                intent.setShowCamera(true);
+                intent.setShowGif(true);
+                intent.setSelectCheckBox(false);
+                intent.setMaxGrideItemCount(3);
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
 
                 break;
             default:
@@ -114,26 +129,55 @@ public class WriteActivity extends Activity implements View.OnClickListener {
         }
     }
 
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+//            try {
+//                isImage = true;
+//                this.requestCode = requestCode;
+//                this.resultCode = resultCode;
+//                this.data = data;
+//
+////                postingRepository.uploadPostingImage(data, getContentResolver(), getUserId());
+//                Bitmap clsBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+//                selectedImage.setImageBitmap(clsBitmap);
+//
+//            } catch (Exception e) {
+//                Log.e("Picture", e.toString());
+//            }
+//        }
+//
+//    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            try {
+        photos = null;
+        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
+            if (data != null) {
+                photos = data.getStringArrayListExtra(PhotoPickerActivity.KEY_SELECTED_PHOTOS);
                 isImage = true;
                 this.requestCode = requestCode;
                 this.resultCode = resultCode;
                 this.data = data;
 
-//                postingRepository.uploadPostingImage(data, getContentResolver(), getUserId());
-                Bitmap clsBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                selectedImage.setImageBitmap(clsBitmap);
+                //postingRepository.uploadPostingImage(data, getContentResolver(), getUserId());
+//                Bitmap clsBitmap = null;
+//                try {
+//                    clsBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                selectedImage.setImageBitmap(clsBitmap);
 
-            } catch (Exception e) {
-                Log.e("Picture", e.toString());
+
+               // imageSubmitResult = postingRepository.multiUpload(data, getContentResolver());
+                new Test().execute();
+
             }
         }
-
     }
 
 
@@ -143,6 +187,66 @@ public class WriteActivity extends Activity implements View.OnClickListener {
     }
 
 
+    public class Test extends AsyncTask<Boolean, Void, Void> {
+
+        ProgressDialog progressDialog;
+
+        @Override
+        protected Void doInBackground(Boolean... params) {
+            String charset = "UTF-8";
+            int attachedImgCnt = photos.size();
+
+//            File uploadFile1 = new File(photos.get(0));
+//            File uploadFile2 = new File(photos.get(1));
+            String requestURL = URLInfo.Posting_MultiUpload;
+
+
+            try {
+                MultipartUtility multipart = new MultipartUtility(requestURL, charset);
+
+//                multipart.addHeaderField("User-Agent", "CodeJava");
+//                multipart.addHeaderField("Test-Header", "Header-Value");
+
+//                multipart.addFormField("description", "Cool Pictures");
+//                multipart.addFormField("keywords", "Java,upload,Spring");
+
+                for(int i=0; i<attachedImgCnt; i++){
+                    multipart.addFilePart("uploadedfile", new File(photos.get(i)));
+                }
+
+
+                List<String> response = multipart.finish();
+
+                System.out.println("SERVER REPLIED:");
+
+                for (String line : response) {
+                    System.out.println(line);
+                }
+            } catch (IOException ex) {
+                System.err.println(ex);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            progressDialog.dismiss();
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(WriteActivity.this);
+            progressDialog.setMessage("처리중..");
+            progressDialog.setCancelable(true);
+            progressDialog.show();
+        }
+
+        private int getUserId(){
+            SharedPreferences pref =  getSharedPreferences("userId", Context.MODE_PRIVATE);
+            return Integer.parseInt(pref.getString("userId", ""));
+        }
+    }//SubmitPost Class();;
 
 
     public class SubmitPost extends AsyncTask<Boolean, Void, Void> {
@@ -155,8 +259,8 @@ public class WriteActivity extends Activity implements View.OnClickListener {
             {
                 //Getting data from server
 
-                if(isImage){
-                    imageSubmitResult = postingRepository.writePostWithImage(getUserId(), inputContent, data, getContentResolver());
+                if (isImage) {
+                    imageSubmitResult = postingRepository.multiUpload(data, getContentResolver());
                 }else{
                     submitResult = postingRepository.writePost(getUserId(), inputContent);
                 }

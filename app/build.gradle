@@ -37,4 +37,5 @@ dependencies {
     compile 'com.squareup:otto:1.3.7'
     compile 'com.github.chrisbanes:PhotoView:1.2.7' //포토뷰어
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.yongbeam.y_photopicker:y-photopicker:0.0.1'
 }

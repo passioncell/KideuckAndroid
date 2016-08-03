@@ -19,5 +19,5 @@ public interface IPostingRepository {
     Vector<DetailPostingModel> getDetailPosting(int postingId, int userId);
     boolean writePost(int userId, String content);
     String writePostWithImage(int userId, String content, Intent data, ContentResolver contentResolver);
-
+    String multiUpload(Intent data, ContentResolver contentResolver);
 }

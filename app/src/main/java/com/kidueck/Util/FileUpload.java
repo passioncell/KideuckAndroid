@@ -137,9 +137,6 @@ public class FileUpload {
         return file_name;
     }
 
-
-
-
     public static int getBitmapOfWidth( String fileName ){
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -236,6 +233,7 @@ public class FileUpload {
         }
         return imgBitmap;
     }
+
 
 
 }

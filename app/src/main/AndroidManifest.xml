@@ -79,6 +79,18 @@
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true" />
 
+        <!-- 이미지 첨부 -->
+        <activity android:name="com.yongbeam.y_photopicker.util.photopicker.PhotoPickerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity android:name="com.yongbeam.y_photopicker.util.photopicker.PhotoPagerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
+        <activity
+            android:name="com.yongbeam.y_photopicker.util.photopicker.ucrop.UCropActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:screenOrientation="portrait"/>
+
     </application>
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -88,4 +100,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
 </manifest>

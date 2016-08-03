@@ -26,6 +26,8 @@ public class URLInfo {
     public final static String Comment_WriteDeepComment = WEB_SERVER_IP + "/Comment/WriteDeepComment"; // 댓글의 댓글 작성
     public final static String Comment_GetDeepCommentList = WEB_SERVER_IP + "/Comment/GetDeepCommentList"; // 댓글의 댓글 작성
     public final static String Comment_GetDeepCommentDetail = WEB_SERVER_IP + "/Comment/GetDeepCommentDetail"; // 댓글의 댓글 디테일
+    public final static String Posting_MultiUpload = WEB_SERVER_IP + "/Posting/UploadMultiImages"; // 포스팅 이미지 전송
+
 
 
     public String getWebServerIp(){
