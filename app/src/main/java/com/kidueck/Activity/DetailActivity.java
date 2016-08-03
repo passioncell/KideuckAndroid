@@ -54,6 +54,9 @@ import java.util.Vector;
 public class DetailActivity extends Activity implements  AdapterView.OnItemClickListener, AbsListView.OnScrollListener,
         View.OnClickListener{
 
+    private static int BACK_FROM = -1;
+    public static int COMMENT_CNT = 0;
+
     public int selectedPostingId;
 
     private ListView mListView = null;
@@ -105,12 +108,6 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
         init();
         initShare();
 
-    }
-
-    @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     private void init(){
@@ -196,10 +193,29 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //리스트뷰 행 클릭
+        int selectedCommentId = vector.get(position-1).commentId;
         Intent intent = new Intent(DetailActivity.this, DeepCommentActivity.class);
-        intent.putExtra("selectedCommentId", String.valueOf(vector.get(position-1).commentId));
+        intent.putExtra("selectedCommentId", selectedCommentId + "");
         startActivity(intent);
 
+        System.out.println("position-1 : " + (position-1));
+        BACK_FROM = position-1;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (BACK_FROM != -1) {
+            Comment data = (Comment) mAdapter.getItem(BACK_FROM);
+
+            System.out.println("COMMENT_CNT : " + COMMENT_CNT);
+            data.setDeepCommentcnt(data.getDeepCommentcnt() + COMMENT_CNT);
+
+            BACK_FROM = -1;
+            COMMENT_CNT = 0;
+
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -339,8 +355,7 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
                 holder.isCommenterIcon.setVisibility(View.GONE);
             }
 
-            String deepCommentCntToString = String.valueOf(data.deepCommentcnt);
-            holder.deepCommentCnt.setText(deepCommentCntToString+"개의 댓글");
+            holder.deepCommentCnt.setText(data.getDeepCommentcnt()+"개의 댓글");
 
             return convertView;
         }
@@ -506,7 +521,7 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
             if(isUpDown == 1){
                 btn_up.setBackground(getResources().getDrawable(R.drawable.round_stroke_fill));
                 btn_up.setTextColor(Color.WHITE);
-            }else if(isUpDown == -1){
+            } else if(isUpDown == -1){
                 btn_down.setBackground(getResources().getDrawable(R.drawable.round_stroke_fill));
                 btn_down.setTextColor(Color.WHITE);
             }
@@ -613,7 +628,7 @@ public class DetailActivity extends Activity implements  AdapterView.OnItemClick
                 changedIsUpDown = 1;
             }else{
                 setUpDownButton(-1);
-                changedIsUpDown = 2;
+                changedIsUpDown = -1;
             }
 
             }else {

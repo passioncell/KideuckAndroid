@@ -29,6 +29,7 @@ import java.util.Vector;
 public class DeepCommentActivity extends Activity implements View.OnClickListener{
 
     int selectedCommentId;
+
     CommentRepository commentRepository = new CommentRepository();
     public DeepCommentListModel deepCommentDetail; //루트 댓글 받을객체
     public Vector<DeepCommentListModel> vector = new Vector<DeepCommentListModel>();
@@ -137,7 +138,7 @@ public class DeepCommentActivity extends Activity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.ib_deep_back: //창닫기
-                finish();
+                onBackPressed();
                 break;
             case R.id.ib_deep_comment:
                 inputDeepComment = et_comment_content.getText().toString();
@@ -145,6 +146,8 @@ public class DeepCommentActivity extends Activity implements View.OnClickListene
                     Toast.makeText(getApplicationContext(), "글을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
                     new SubmitDeepComment().execute();
+                    DetailActivity.COMMENT_CNT = DetailActivity.COMMENT_CNT + 1;
+                    System.out.println("DetailActivity.COMMENT_CNT : " + DetailActivity.COMMENT_CNT);
                 }
                 break;
             default:
@@ -153,6 +156,12 @@ public class DeepCommentActivity extends Activity implements View.OnClickListene
     }
 
 
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+
+        finish();
+    }
 
     private class SetDetailComment extends AsyncTask<Boolean, Void, Void> {
 
