@@ -233,6 +233,7 @@ public class PostingRepository implements IPostingRepository {
         return detailVector;
     }
 
+    //(구)
     @Override
     public boolean writePost(int userId, String content) {
         try {
@@ -241,6 +242,26 @@ public class PostingRepository implements IPostingRepository {
             Properties prop = new Properties();
             prop.setProperty("userId", String.valueOf(userId));
             prop.setProperty("content", content);
+            return Boolean.parseBoolean(HttpMessage.getWebContentText(httpMessage.sendGetMessage(prop)));
+
+        } catch (IOException e1) {
+
+            Log.d(TAG, e1.getMessage());
+
+            return false;
+        }
+    }
+
+    //(신)
+    @Override
+    public boolean writePost0(int userId, String content, boolean isImage) {
+        try {
+            url = new URL(URLInfo.Posting_WritePosting);
+            httpMessage = new HttpMessage(url);
+            Properties prop = new Properties();
+            prop.setProperty("userId", String.valueOf(userId));
+            prop.setProperty("content", content);
+            prop.setProperty("isImage", String.valueOf(isImage));
             return Boolean.parseBoolean(HttpMessage.getWebContentText(httpMessage.sendGetMessage(prop)));
 
         } catch (IOException e1) {

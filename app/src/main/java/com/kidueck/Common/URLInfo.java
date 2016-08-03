@@ -18,7 +18,8 @@ public class URLInfo {
     public final static String Posting_GetDetailPosting = WEB_SERVER_IP + "/Posting/GetDetailPosting0"; //디테일 정보 가져오기(신)
     public final static String Comment_WriteComment2 = WEB_SERVER_IP + "/Comment/WriteComment2"; //댓글 쓰기
     public final static String Notice_GetNewNoticeCnt = WEB_SERVER_IP + "/Notice/GetNewNoticeCnt"; //최신 알림 갯수 가져오기
-    public final static String Posting_WritePosting2 = WEB_SERVER_IP + "/Posting/WritePosting2"; //최신 알림 갯수 가져오기
+    public final static String Posting_WritePosting2 = WEB_SERVER_IP + "/Posting/WritePosting2"; // 글전송 (구)
+    public final static String Posting_WritePosting = WEB_SERVER_IP + "/Posting/WritePosting"; // 글전송 (신)
     public final static String Setting_GetLatestVersionName = WEB_SERVER_IP + "/Setting/GetLatestVersionName"; //최신 버전네임 가져오기
     public final static String Setting_WriteInquiry = WEB_SERVER_IP + "/Setting/WriteInquiry"; //문의사항 전송
     public final static String Member_GetUserPoint = WEB_SERVER_IP + "/Member/GetUserPoint"; // GET 유저 포인트트

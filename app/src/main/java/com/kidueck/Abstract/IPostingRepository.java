@@ -18,6 +18,7 @@ public interface IPostingRepository {
     boolean votePosting(int userId, int postingId, int type);
     Vector<DetailPostingModel> getDetailPosting(int postingId, int userId);
     boolean writePost(int userId, String content);
+    boolean writePost0(int userId, String content, boolean isImage);
     String writePostWithImage(int userId, String content, Intent data, ContentResolver contentResolver);
     String multiUpload(Intent data, ContentResolver contentResolver);
 }

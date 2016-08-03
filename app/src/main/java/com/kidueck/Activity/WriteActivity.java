@@ -103,8 +103,13 @@ public class WriteActivity extends Activity implements View.OnClickListener {
                     Toast.makeText(getApplicationContext(), "글을 입력해주세요.", Toast.LENGTH_SHORT).show();
 
                 }else{
-                    postContent.setText("");
-                    new SubmitPost().execute();
+                    if(isImage){ //이미지 첨부한경우
+                        new SubmitPost().execute();
+                        new UploadImages().execute();
+                    }else{ //이미지 안첨부한경우
+                        new SubmitPost().execute();
+                    }
+
                 }
 
                 break;
@@ -174,7 +179,6 @@ public class WriteActivity extends Activity implements View.OnClickListener {
 
 
                // imageSubmitResult = postingRepository.multiUpload(data, getContentResolver());
-                new Test().execute();
 
             }
         }
@@ -187,43 +191,36 @@ public class WriteActivity extends Activity implements View.OnClickListener {
     }
 
 
-    public class Test extends AsyncTask<Boolean, Void, Void> {
+    public class UploadImages extends AsyncTask<Boolean, Void, Void> {
 
         ProgressDialog progressDialog;
+        boolean uploadResult = false;
+        String exeptionStr;
 
         @Override
         protected Void doInBackground(Boolean... params) {
             String charset = "UTF-8";
             int attachedImgCnt = photos.size();
-
-//            File uploadFile1 = new File(photos.get(0));
-//            File uploadFile2 = new File(photos.get(1));
             String requestURL = URLInfo.Posting_MultiUpload;
-
 
             try {
                 MultipartUtility multipart = new MultipartUtility(requestURL, charset);
-
-//                multipart.addHeaderField("User-Agent", "CodeJava");
-//                multipart.addHeaderField("Test-Header", "Header-Value");
-
-//                multipart.addFormField("description", "Cool Pictures");
-//                multipart.addFormField("keywords", "Java,upload,Spring");
-
+                //multipart.addHeaderField("User-Agent", "CodeJava");
+                multipart.addFormField("userId", String.valueOf(getUserId()));
                 for(int i=0; i<attachedImgCnt; i++){
                     multipart.addFilePart("uploadedfile", new File(photos.get(i)));
                 }
-
-
                 List<String> response = multipart.finish();
-
                 System.out.println("SERVER REPLIED:");
-
                 for (String line : response) {
                     System.out.println(line);
                 }
+
+                uploadResult = true;
             } catch (IOException ex) {
                 System.err.println(ex);
+                exeptionStr = ex.toString();
+                uploadResult = false;
             }
             return null;
         }
@@ -231,13 +228,20 @@ public class WriteActivity extends Activity implements View.OnClickListener {
         @Override
         protected void onPostExecute(Void aVoid) {
             progressDialog.dismiss();
-
+            if(uploadResult){
+                Toast.makeText(getApplicationContext(), "작성완료", Toast.LENGTH_SHORT).show();
+                finish();
+                feedFrag = FeedFragment.newInstance();
+                MainActivity.getInstace().getSupportFragmentManager().beginTransaction().replace(R.id.ll_frag_content, feedFrag).commitAllowingStateLoss();
+            }else{
+                Toast.makeText(getApplicationContext(), "오류 : "+exeptionStr, Toast.LENGTH_LONG).show();
+            }
         }
 
         @Override
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(WriteActivity.this);
-            progressDialog.setMessage("처리중..");
+            progressDialog.setMessage("사진등록중..");
             progressDialog.setCancelable(true);
             progressDialog.show();
         }
@@ -259,12 +263,7 @@ public class WriteActivity extends Activity implements View.OnClickListener {
             {
                 //Getting data from server
 
-                if (isImage) {
-                    imageSubmitResult = postingRepository.multiUpload(data, getContentResolver());
-                }else{
-                    submitResult = postingRepository.writePost(getUserId(), inputContent);
-                }
-
+                submitResult = postingRepository.writePost0(getUserId(), inputContent, isImage);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -277,38 +276,15 @@ public class WriteActivity extends Activity implements View.OnClickListener {
         protected void onPostExecute(Void aVoid) {
             progressDialog.dismiss();
 
-            if(isImage){//사진 첨부한경우
-                if(imageSubmitResult != null){
-                   // Toast.makeText(getApplicationContext(), "imageSubmitResult"+imageSubmitResult, Toast.LENGTH_SHORT).show();
-                    Log.e("zzz", "imageSubmitResult"+imageSubmitResult);
-
-                    //포인트 갱신
-                    sendBroadcast(new Intent(WriteActivity.this, PointReceiver.class));
-
-                    finish();
-                    feedFrag = FeedFragment.newInstance();
-                    MainActivity.getInstace().getSupportFragmentManager().beginTransaction().replace(R.id.ll_frag_content, feedFrag).commitAllowingStateLoss();
-
-                }else{
-                    Toast.makeText(getApplicationContext(), "사진 게시글 등록에 실패하였습니다.", Toast.LENGTH_SHORT).show();
-                }
-
-            }else{ //사진첨부 안한경우
-                if(submitResult){
-                    Toast.makeText(getApplicationContext(), "글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
-
-                    //포인트 갱신
-                    sendBroadcast(new Intent(WriteActivity.this, PointReceiver.class));
-
-                    finish();
-                    feedFrag = FeedFragment.newInstance();
-                    MainActivity.getInstace().getSupportFragmentManager().beginTransaction().replace(R.id.ll_frag_content, feedFrag).commitAllowingStateLoss();
-
-                }else{
-                    Toast.makeText(getApplicationContext(), "게시글 등록에 실패하였습니다.", Toast.LENGTH_SHORT).show();
-                }
+            if(!submitResult){ //게시글 등록실패
+                Toast.makeText(getApplicationContext(), "게시글 등록중에 오류가 발생하였습니다.", Toast.LENGTH_SHORT).show();
             }
 
+            if(!isImage){ //사진 첨부안한경우
+                finish();
+                feedFrag = FeedFragment.newInstance();
+                MainActivity.getInstace().getSupportFragmentManager().beginTransaction().replace(R.id.ll_frag_content, feedFrag).commitAllowingStateLoss();
+            }
 
         }
 
