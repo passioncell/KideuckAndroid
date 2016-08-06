@@ -82,7 +82,7 @@
         android:background="@color/greyBg"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="match_parent"
         android:layout_marginBottom="20dp">
         <LinearLayout
             android:layout_width="match_parent"
@@ -101,12 +101,17 @@
                 />
         </LinearLayout>
 
-
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/iv_write_selected"
-            android:layout_gravity="center_horizontal" />
+            android:id="@+id/iv_wirte_selected_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
+        <!--<LinearLayout-->
+            <!--android:id="@+id/ll_write_selected_img"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+        <!--</LinearLayout>-->
 
     </LinearLayout>
 

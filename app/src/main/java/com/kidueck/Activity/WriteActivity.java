@@ -5,11 +5,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kidueck.Common.PointReceiver;
 import com.kidueck.Common.URLInfo;
 import com.kidueck.Concrete.PostingRepository;
 import com.kidueck.Fragment.FeedFragment;
@@ -54,6 +55,7 @@ public class WriteActivity extends Activity implements View.OnClickListener {
     int requestCode, resultCode;
     Intent data;
     List<String> photos = null;
+//    LinearLayout selectedImgLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +90,8 @@ public class WriteActivity extends Activity implements View.OnClickListener {
         });
         submitPost = (Button) findViewById(R.id.bt_write_submit);
         selectImageButton = (Button) findViewById(R.id.bt_write_image);
-        selectedImage = (ImageView) findViewById(R.id.iv_write_selected);
+        selectedImage = (ImageView) findViewById(R.id.iv_wirte_selected_img);
+        //selectedImgLayout = (LinearLayout) findViewById(R.id.ll_write_selected_img);
 
         submitPost.setOnClickListener(this);
         selectImageButton.setOnClickListener(this);
@@ -101,7 +104,6 @@ public class WriteActivity extends Activity implements View.OnClickListener {
                 inputContent = postContent.getText().toString().trim();
                 if(inputContent.length() == 0){
                     Toast.makeText(getApplicationContext(), "글을 입력해주세요.", Toast.LENGTH_SHORT).show();
-
                 }else{
                     if(isImage){ //이미지 첨부한경우
                         new SubmitPost().execute();
@@ -134,27 +136,6 @@ public class WriteActivity extends Activity implements View.OnClickListener {
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-//            try {
-//                isImage = true;
-//                this.requestCode = requestCode;
-//                this.resultCode = resultCode;
-//                this.data = data;
-//
-////                postingRepository.uploadPostingImage(data, getContentResolver(), getUserId());
-//                Bitmap clsBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-//                selectedImage.setImageBitmap(clsBitmap);
-//
-//            } catch (Exception e) {
-//                Log.e("Picture", e.toString());
-//            }
-//        }
-//
-//    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -162,12 +143,25 @@ public class WriteActivity extends Activity implements View.OnClickListener {
         photos = null;
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
             if (data != null) {
-                photos = data.getStringArrayListExtra(PhotoPickerActivity.KEY_SELECTED_PHOTOS);
-                isImage = true;
+
                 this.requestCode = requestCode;
                 this.resultCode = resultCode;
                 this.data = data;
+                photos = data.getStringArrayListExtra(PhotoPickerActivity.KEY_SELECTED_PHOTOS);
+                isImage = true;
 
+                for(int i=0; i< photos.size(); i++){
+                    try {
+//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse("file://"+photos.get(i)));
+//                        image.setImageBitmap(bitmap);
+//                        selectedImgLayout.addView(image);
+                        Bitmap clsBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse("file://"+photos.get(i)));
+                        selectedImage.setImageBitmap(clsBitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(),"이미지 첨부에 실패하였습니다."+e.toString(),Toast.LENGTH_LONG).show();
+                    }
+                }
                 //postingRepository.uploadPostingImage(data, getContentResolver(), getUserId());
 //                Bitmap clsBitmap = null;
 //                try {
@@ -197,19 +191,47 @@ public class WriteActivity extends Activity implements View.OnClickListener {
         boolean uploadResult = false;
         String exeptionStr;
 
+
         @Override
         protected Void doInBackground(Boolean... params) {
             String charset = "UTF-8";
             int attachedImgCnt = photos.size();
             String requestURL = URLInfo.Posting_MultiUpload;
 
+
             try {
                 MultipartUtility multipart = new MultipartUtility(requestURL, charset);
                 //multipart.addHeaderField("User-Agent", "CodeJava");
-                multipart.addFormField("userId", String.valueOf(getUserId()));
+
                 for(int i=0; i<attachedImgCnt; i++){
-                    multipart.addFilePart("uploadedfile", new File(photos.get(i)));
+//                    File uploadFile = new File(photos.get(i));
+//                    //이미지 리사이징
+//                    Bitmap bitmap = BitmapFactory.decodeFile(uploadFile.getAbsolutePath());
+//                    OutputStream out = null;
+//                    try {
+//
+//                        int height=bitmap.getHeight();
+//                        int width=bitmap.getWidth();
+//
+//                        uploadFile.createNewFile();
+//                        out = new FileOutputStream(uploadFile);
+//                        //700 부분을 자신이 원하는 크기로 변경할 수 있습니다.
+//                        bitmap = Bitmap.createScaledBitmap(bitmap, 160, height/(width/160), true);
+//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    } finally {
+//                        try {
+//                            out.close();
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+                    multipart.addFilePart("uploadedfile",new File(photos.get(i)));
                 }
+
+                multipart.addFormField("userId", String.valueOf(getUserId()));
+
                 List<String> response = multipart.finish();
                 System.out.println("SERVER REPLIED:");
                 for (String line : response) {
@@ -250,7 +272,8 @@ public class WriteActivity extends Activity implements View.OnClickListener {
             SharedPreferences pref =  getSharedPreferences("userId", Context.MODE_PRIVATE);
             return Integer.parseInt(pref.getString("userId", ""));
         }
-    }//SubmitPost Class();;
+
+    }//UploadImages Class();;
 
 
     public class SubmitPost extends AsyncTask<Boolean, Void, Void> {
