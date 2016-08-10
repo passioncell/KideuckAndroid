@@ -84,7 +84,7 @@ public class PostingRepository implements IPostingRepository {
                         Obj.get("writtenDate").toString(), Boolean.parseBoolean(Obj.get("isWriter").toString()),
                         Obj.get("commentCnt").toString(), Integer.parseInt(Obj.get("totalVoteCnt").toString()),
                         Integer.parseInt(Obj.get("isUpDown").toString()),Obj.get("lat").toString(),Obj.get("lon").toString(),
-                        Boolean.parseBoolean(Obj.get("isImage").toString())
+                        Boolean.parseBoolean(Obj.get("isImage").toString()), Integer.parseInt(Obj.get("imageCnt").toString())
                 );
                 vector.add(postingListModel);
             }
@@ -122,7 +122,7 @@ public class PostingRepository implements IPostingRepository {
                         Obj.get("writtenDate").toString(), Boolean.parseBoolean(Obj.get("isWriter").toString()),
                         Obj.get("commentCnt").toString(), Integer.parseInt(Obj.get("totalVoteCnt").toString()),
                         Integer.parseInt(Obj.get("isUpDown").toString()),Obj.get("lat").toString(),Obj.get("lon").toString(),
-                        Boolean.parseBoolean(Obj.get("isImage").toString()));
+                        Boolean.parseBoolean(Obj.get("isImage").toString()),Integer.parseInt(Obj.get("imageCnt").toString()));
                 vector.add(postingListModel);
             }
 
@@ -159,7 +159,7 @@ public class PostingRepository implements IPostingRepository {
                         Obj.get("writtenDate").toString(), Boolean.parseBoolean(Obj.get("isWriter").toString()),
                         Obj.get("commentCnt").toString(), Integer.parseInt(Obj.get("totalVoteCnt").toString()),
                         Integer.parseInt(Obj.get("isUpDown").toString()),Obj.get("lat").toString(),Obj.get("lon").toString(),
-                        Boolean.parseBoolean(Obj.get("isImage").toString()));
+                        Boolean.parseBoolean(Obj.get("isImage").toString()), Integer.parseInt(Obj.get("imageCnt").toString()));
                 vector.add(postingListModel);
             }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/greyBg">
     <LinearLayout
         android:orientation="horizontal"
@@ -58,6 +58,28 @@
             />
     </LinearLayout>
 
+    <!--<LinearLayout-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="40dp">-->
+        <!--<RadioGroup-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal">-->
+            <!--<RadioButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="익명으로 쓰기"-->
+                <!--android:textSize="13dp"-->
+                <!--android:checked="true"/>-->
+            <!--<RadioButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="닉네임으로 쓰기"-->
+                <!--android:textSize="13dp"-->
+                <!--android:checked="false"/>-->
+        <!--</RadioGroup>-->
+    <!--</LinearLayout>-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -82,11 +104,11 @@
         android:background="@color/greyBg"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="20dp">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             android:background="#fff"
             android:orientation="vertical">
             <EditText
@@ -99,18 +121,26 @@
                 android:focusable="true"
                 android:maxLength="200"
                 />
-        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/iv_wirte_selected_img"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            />
+        </LinearLayout>
+        <HorizontalScrollView
+            android:id="@+id/scrollView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:id="@+id/ll_write_selected_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
         <!--<LinearLayout-->
             <!--android:id="@+id/ll_write_selected_img"-->
             <!--android:orientation="horizontal"-->
             <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent">-->
+            <!--android:layout_height="200dp"-->
+            <!--android:background="#000">-->
         <!--</LinearLayout>-->
 
     </LinearLayout>

@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,17 +46,15 @@ public class WriteActivity extends Activity implements View.OnClickListener {
     PostingRepository postingRepository = new PostingRepository();
     String inputContent;
     boolean submitResult;
-    String imageSubmitResult;
 
-    final int PICK_IMAGE_REQUEST=100;
-    ImageView selectedImage;
 
     //이미지 첨부 관련
+    final int PICK_IMAGE_REQUEST=100;
     boolean isImage = false;
     int requestCode, resultCode;
     Intent data;
     List<String> photos = null;
-//    LinearLayout selectedImgLayout;
+    LinearLayout selectedImgLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +89,7 @@ public class WriteActivity extends Activity implements View.OnClickListener {
         });
         submitPost = (Button) findViewById(R.id.bt_write_submit);
         selectImageButton = (Button) findViewById(R.id.bt_write_image);
-        selectedImage = (ImageView) findViewById(R.id.iv_wirte_selected_img);
-        //selectedImgLayout = (LinearLayout) findViewById(R.id.ll_write_selected_img);
+        selectedImgLayout = (LinearLayout) findViewById(R.id.ll_write_selected_img);
 
         submitPost.setOnClickListener(this);
         selectImageButton.setOnClickListener(this);
@@ -140,6 +138,7 @@ public class WriteActivity extends Activity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        selectedImgLayout.removeAllViews();
         photos = null;
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
             if (data != null) {
@@ -152,27 +151,16 @@ public class WriteActivity extends Activity implements View.OnClickListener {
 
                 for(int i=0; i< photos.size(); i++){
                     try {
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse("file://"+photos.get(i)));
-//                        image.setImageBitmap(bitmap);
-//                        selectedImgLayout.addView(image);
-                        Bitmap clsBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse("file://"+photos.get(i)));
-                        selectedImage.setImageBitmap(clsBitmap);
+                        ImageView image = new ImageView(WriteActivity.this);
+                        selectedImgLayout.addView(image);
+                        Bitmap orgImage = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse("file://"+photos.get(i)));
+                        Bitmap resize = Bitmap.createScaledBitmap(orgImage, 300, 400, true);
+                        image.setImageBitmap(resize);
                     } catch (IOException e) {
                         e.printStackTrace();
                         Toast.makeText(getApplicationContext(),"이미지 첨부에 실패하였습니다."+e.toString(),Toast.LENGTH_LONG).show();
                     }
                 }
-                //postingRepository.uploadPostingImage(data, getContentResolver(), getUserId());
-//                Bitmap clsBitmap = null;
-//                try {
-//                    clsBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                selectedImage.setImageBitmap(clsBitmap);
-
-
-               // imageSubmitResult = postingRepository.multiUpload(data, getContentResolver());
 
             }
         }
@@ -201,32 +189,7 @@ public class WriteActivity extends Activity implements View.OnClickListener {
 
             try {
                 MultipartUtility multipart = new MultipartUtility(requestURL, charset);
-                //multipart.addHeaderField("User-Agent", "CodeJava");
-
                 for(int i=0; i<attachedImgCnt; i++){
-//                    File uploadFile = new File(photos.get(i));
-//                    //이미지 리사이징
-//                    Bitmap bitmap = BitmapFactory.decodeFile(uploadFile.getAbsolutePath());
-//                    OutputStream out = null;
-//                    try {
-//
-//                        int height=bitmap.getHeight();
-//                        int width=bitmap.getWidth();
-//
-//                        uploadFile.createNewFile();
-//                        out = new FileOutputStream(uploadFile);
-//                        //700 부분을 자신이 원하는 크기로 변경할 수 있습니다.
-//                        bitmap = Bitmap.createScaledBitmap(bitmap, 160, height/(width/160), true);
-//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    } finally {
-//                        try {
-//                            out.close();
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
                     multipart.addFilePart("uploadedfile",new File(photos.get(i)));
                 }
 
@@ -285,7 +248,6 @@ public class WriteActivity extends Activity implements View.OnClickListener {
             try
             {
                 //Getting data from server
-
                 submitResult = postingRepository.writePost0(getUserId(), inputContent, isImage);
             }
             catch (Exception e) {
