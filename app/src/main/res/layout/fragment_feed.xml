@@ -39,5 +39,6 @@
     <ListView
         android:id="@+id/lv_feed"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"/>
 </LinearLayout>

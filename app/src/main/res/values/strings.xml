@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">키득</string>
+    <string name="app_name2">키득</string>
     <string name="facebook_app_id">539674392883275</string>
 </resources>

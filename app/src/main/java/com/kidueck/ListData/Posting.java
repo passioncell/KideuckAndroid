@@ -23,6 +23,7 @@ public class Posting {
     public int postingId;
     public Drawable attachedImg;
     public boolean isImage;
+    public int imageCnt;
 
 
     public Posting() {
@@ -30,7 +31,7 @@ public class Posting {
 
     public Posting(String content, String date, Drawable deleteButton, String commentCnt, int totalVoteCount,
                    Drawable upButton, Drawable downButton, int isUpDown, boolean isWriter, int postingId, Drawable attachedImg,
-                   boolean isImage) {
+                   boolean isImage, int imageCnt) {
         this.content = content;
         this.date = date;
         this.deleteButton = deleteButton;
@@ -43,6 +44,7 @@ public class Posting {
         this.postingId = postingId;
         this.attachedImg = attachedImg;
         this.isImage = isImage;
+        this.imageCnt = imageCnt;
     }
 
     public String getContent() {
@@ -139,5 +141,13 @@ public class Posting {
 
     public void setIsImage(boolean isImage) {
         this.isImage = isImage;
+    }
+
+    public int getImageCnt() {
+        return imageCnt;
+    }
+
+    public void setImageCnt(int imageCnt) {
+        this.imageCnt = imageCnt;
     }
 }

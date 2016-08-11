@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,8 +21,10 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -327,6 +330,7 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
 
                 //첨부이미지
                 holder.attachdImg = (ImageView) convertView.findViewById(R.id.iv_feed_attached_img);
+                holder.imageLayout = (LinearLayout) convertView.findViewById(R.id.ll_feed_image);
 
                 holder.upButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -399,9 +403,15 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
 
 
             holder.attachdImg.setImageDrawable(null);
+            holder.imageLayout.removeAllViews();
 
             if(data.isImage){
-                Picasso.with(getContext()).load(new URLInfo().getPostImgUploadUrl() + data.getPostingId() + "/1.jpg").into(holder.attachdImg);
+                for(int i=0; i<data.getImageCnt(); i++) {
+                    ImageView image = new ImageView(getActivity());
+                    Picasso.with(getContext()).load(new URLInfo().getPostImgUploadUrl() + data.getPostingId() + "/"+String.valueOf(i+1)+".jpg")
+                            .into(image);
+                    holder.imageLayout.addView(image);
+                }
             }
 
             holder.upButton.setTag(position);
@@ -436,6 +446,7 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
             addInfo.isWriter = postingListModel.isWriter;
             addInfo.postingId = Integer.parseInt(postingListModel.postingId);
             addInfo.isImage = postingListModel.isImage;
+            addInfo.imageCnt = postingListModel.imageCnt;
 
             datas.add(addInfo);
         }
@@ -452,6 +463,7 @@ public class FeedFragment extends Fragment implements  AdapterView.OnItemClickLi
         public ImageButton upButton;
         public ImageButton downButton;
         public ImageView attachdImg;
+        public LinearLayout imageLayout;
     }//view holder class ();;
 
     //포스팅 리스트 가져올 내부클래스(쓰레드)
